@@ -2,10 +2,7 @@ package il.ac.tau.cs.hanukcoin;
 
 import javafx.util.Pair;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.*;
 import java.nio.channels.Pipe;
 import java.nio.channels.ServerSocketChannel;
@@ -26,12 +23,18 @@ public class ServerAnswer {
 	public static String host;
 	public static int port;
 
+
 	public static void log(String fmt, Object... args) {
 		println(fmt, args);
 	}
 
 	public static void println(String fmt, Object... args) {
 		System.out.format(fmt + "\n", args);
+	}
+
+	private void readFile(DataInputStream dis, DataOutputStream dos){
+		ClientConnection FileConnection = new ClientConnection(dis, dos);
+		FileConnection.parseMessage(dis);
 	}
 
 	private ShowChain.NodeInfo[] get3RandomNodes() {
@@ -100,6 +103,10 @@ public class ServerAnswer {
 				// connectionThread would fail and kill thread
 			}
 		}
+		public ClientConnection(DataInputStream dis, DataOutputStream dos){
+			dataInput = dis;
+			dataOutput = dos;
+		}
 
 		public void sendReceive() {
 			try {
@@ -130,6 +137,9 @@ public class ServerAnswer {
 		}
 
 		private void send(int cmd, DataOutputStream dos) throws IOException {
+			sendToFileOrNode(cmd,dos,false);
+		}
+		private void sendToFileOrNode(int cmd, DataOutputStream dos, boolean file) throws IOException {
 
 			dos.writeInt(cmd);
 			dos.writeInt(BEEF_BEEF);
@@ -153,7 +163,8 @@ public class ServerAnswer {
 			int blockChain_size = 0;
 			dos.writeInt(blockChain_size);
 			// TODO(students): sendRequest data of blocks
-			ServerAnswer.waitingList.add(ConnectionsList.hmap.get(new Pair(this.host, this.port)));
+			if (!file)
+				ServerAnswer.waitingList.add(ConnectionsList.hmap.get(new Pair(this.host, this.port)));
 		}
 
 		public void parseMessage(DataInputStream dataInput) throws IOException {
@@ -296,6 +307,17 @@ public class ServerAnswer {
 
 		Thread firstMassage = new Thread( new Runnable() {
 			public void run() {
+
+				try {
+					File file = new File("connectionList.txt");
+					DataOutputStream FileDataOut = new DataOutputStream(new FileOutputStream(file));
+					DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
+					server.ClientConnection FileClient = new server.ClientConnection(FileDataIn, FileDataOut);
+
+					FileDataIn.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				server.sendReceive(addrTal, portTal);
 			}
 		});
