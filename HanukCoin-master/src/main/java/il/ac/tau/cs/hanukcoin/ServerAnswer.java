@@ -22,7 +22,7 @@ public class ServerAnswer {
 	public static int lastChange = (int) (System.currentTimeMillis() / 1000);
 	public static String host;
 	public static int port;
-
+	ClientConnection fileConnection;
 
 	public static void log(String fmt, Object... args) {
 		println(fmt, args);
@@ -33,8 +33,20 @@ public class ServerAnswer {
 	}
 
 	private void readFile(DataInputStream dis, DataOutputStream dos){
-		ClientConnection FileConnection = new ClientConnection(dis, dos);
-		FileConnection.parseMessage(dis);
+		ClientConnection fileConnection = new ClientConnection(dis, dos);
+		try {
+			fileConnection.parseMessage(dis);
+			this.fileConnection = fileConnection;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	private void saveFile(){
+		try {
+			fileConnection.sendToFileOrNode(2, fileConnection.dataOutput, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private ShowChain.NodeInfo[] get3RandomNodes() {
@@ -312,8 +324,7 @@ public class ServerAnswer {
 					File file = new File("connectionList.txt");
 					DataOutputStream FileDataOut = new DataOutputStream(new FileOutputStream(file));
 					DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
-					server.ClientConnection FileClient = new server.ClientConnection(FileDataIn, FileDataOut);
-
+					server.readFile(FileDataIn, FileDataOut);
 					FileDataIn.close();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -329,6 +340,7 @@ public class ServerAnswer {
 				while (true) {
 					try {
 						Thread.sleep(5 * 60 - ((int) (System.currentTimeMillis() / 1000) - server.lastChange));
+						server.saveFile();
 						for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 							ShowChain.NodeInfo node = it.next();
 							// delete nodes that weren't active in 30 min
