@@ -34,16 +34,20 @@ public class ServerAnswer {
 
 	private void readFile(DataInputStream dis, DataOutputStream dos){
 		ClientConnection fileConnection = new ClientConnection(dis, dos);
+		this.fileConnection = fileConnection;
 		try {
 			fileConnection.parseMessage(dis);
-			this.fileConnection = fileConnection;
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	private void saveFile(){
+		System.out.println("*");
 		try {
+			//System.out.println("--------------------------------------------------------------------------- " + );
 			fileConnection.sendToFileOrNode(2, fileConnection.dataOutput, true);
+			System.out.println("***");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -152,7 +156,9 @@ public class ServerAnswer {
 			sendToFileOrNode(cmd,dos,false);
 		}
 		private void sendToFileOrNode(int cmd, DataOutputStream dos, boolean file) throws IOException {
-
+			System.out.println("is file: " + file);
+			System.out.println("connections list hmap: " + ConnectionsList.hmap);
+			System.out.println("connections list active nodes: " + ConnectionsList.activeNodes);
 			dos.writeInt(cmd);
 			dos.writeInt(BEEF_BEEF);
 			if (!ConnectionsList.hmap.isEmpty()) {
@@ -311,11 +317,11 @@ public class ServerAnswer {
 
 //		args = new String[] {"80.179.243.230:2005", "2007"};
 
-		String[] parts = args[0].split(":");
-		String addrTal = parts[0];
-		int portTal = Integer.parseInt(parts[1]);
-
-		ConnectionsList.add(new NodeInfo("Earth" , addrTal, portTal,0));
+//		String[] parts = args[0].split(":");
+//		String addrTal = parts[0];
+//		int portTal = Integer.parseInt(parts[1]);
+//
+//		ConnectionsList.add(new NodeInfo("Earth" , addrTal, portTal,0));
 
 		Thread firstMassage = new Thread( new Runnable() {
 			public void run() {
@@ -329,7 +335,7 @@ public class ServerAnswer {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				server.sendReceive(addrTal, portTal);
+				//server.sendReceive(addrTal, portTal);
 			}
 		});
 		firstMassage.start();
@@ -339,12 +345,12 @@ public class ServerAnswer {
 			public void run() {
 				while (true) {
 					try {
-						Thread.sleep(5 * 60 - ((int) (System.currentTimeMillis() / 1000) - server.lastChange));
+						Thread.sleep(30 - ((int) (System.currentTimeMillis() / 1000) - server.lastChange));
 						server.saveFile();
 						for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 							ShowChain.NodeInfo node = it.next();
 							// delete nodes that weren't active in 30 min
-							if (((int) (System.currentTimeMillis() / 1000 - node.lastSeenTS) >= 30 * 60)) {
+							if (((int) (System.currentTimeMillis() / 1000 - node.lastSeenTS) >= 20)) {
 								ConnectionsList.hmap.remove(node);
 								if (!node.isNew) {
 									ConnectionsList.activeNodes.remove(node);
@@ -354,7 +360,7 @@ public class ServerAnswer {
 								}
 							}
 						}
-						if ((int) (System.currentTimeMillis() / 1000) - server.lastChange >= 5 * 60) {
+						if ((int) (System.currentTimeMillis() / 1000) - server.lastChange >= 30) {
 							server.tryConnection();
 							server.lastChange = (int) (System.currentTimeMillis() / 1000);
 						}
