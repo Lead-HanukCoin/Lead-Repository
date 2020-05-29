@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * Simple request-response server that uses non-blocking TCP API
  */
 class ServerSimpleNonBlocking {
-    protected static int accepPort = 8080;
+    protected static int accepPort = 2005;
 
     class ClientConnection {
         private SocketChannel connectionSocket;

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Created by talfranji on 17/02/2020.
  */
 class ServerSimpleThreads {
-    protected static int accepPort = 8080;
+    protected static int accepPort = 2005;
 
 
     class ClientConnection {
@@ -52,6 +52,7 @@ class ServerSimpleThreads {
             //This function runs in a separate thread to handle the connection
             try {
                 boolean firstLine = true;
+                System.out.println("1, 2, 3, 1, 2, 3, arrrr");
                 while(true) {
                     String line = dataInput.readLine();  // This is blocking
                     if (firstLine) {

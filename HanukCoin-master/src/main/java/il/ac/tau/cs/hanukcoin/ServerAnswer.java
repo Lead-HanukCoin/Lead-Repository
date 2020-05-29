@@ -18,6 +18,7 @@ import org.omg.CORBA.ShortSeqHelper;
 
 public class ServerAnswer {
 	public static int accepPort;
+	public static String TeamName;
 	public static final int BEEF_BEEF = 0xbeefBeef;
 	public static final int DEAD_DEAD = 0xdeadDead;
 	public static ArrayList<ShowChain.NodeInfo> waitingList = new ArrayList<>();
@@ -257,7 +258,7 @@ public class ServerAnswer {
 			try {
 				connectionSocket = acceptSocket.accept(); // this blocks
 				if (connectionSocket != null) {
-					System.out.println("here" + connectionSocket.toString());
+					System.out.println("here : " + connectionSocket.toString());
 					new ServerAnswer.ClientConnection(connectionSocket.socket(), true).runInThread();
 				}
 			} catch (IOException e) {
@@ -268,38 +269,44 @@ public class ServerAnswer {
 	}
 
 	public static void main(String[] args) {
+		ServerAnswer.TeamName = args[2];
 		ServerAnswer.accepPort = Integer.parseInt(args[1]);
 		ServerAnswer.port = ServerAnswer.accepPort;
 		ServerAnswer server = new ServerAnswer();
-		ServerAnswer.host = "85.64.90.214";
+		ServerAnswer.host = "80.179.243.230";
 //        try {
 //            ServerAnswer.host = InetAddress.getLocalHost().getHostAddress();
 //        } catch (UnknownHostException e) {
 //            e.printStackTrace();
 //        }
-		NodeInfo me = new NodeInfo("Lead", ServerAnswer.host, ServerAnswer.port,
+		NodeInfo me = new NodeInfo(ServerAnswer.TeamName, ServerAnswer.host, ServerAnswer.port,
 				(int) (System.currentTimeMillis() / 1000));
 		System.out.println(me);
 		me.isNew = false;
 		ConnectionsList.add(me);
 		ConnectionsList.activeNodes.add(me);
 
-//		args = new String[] { "213.57.218.162:9999" };
-//
-//		String[] parts = args[0].split(":");
-//		String addrTal = parts[0];
-//		int portTal = Integer.parseInt(parts[1]);
-//
-//		ConnectionsList.add(new NodeInfo("LeadHost", addrTal, portTal,0));
-//
-//		server.sendReceive(addrTal, portTal);
+//		args = new String[] {"80.179.243.230:2005", "2007"};
+
+		String[] parts = args[0].split(":");
+		String addrTal = parts[0];
+		int portTal = Integer.parseInt(parts[1]);
+
+		ConnectionsList.add(new NodeInfo("Earth" , addrTal, portTal,0));
+
+		Thread firstMassage = new Thread( new Runnable() {
+			public void run() {
+				server.sendReceive(addrTal, portTal);
+			}
+		});
+		firstMassage.start();
 
 		Thread fiveMin = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (true) {
 					try {
-						Thread.sleep(5 - ((int) (System.currentTimeMillis() / 1000) - server.lastChange));
+						Thread.sleep(5 * 60 - ((int) (System.currentTimeMillis() / 1000) - server.lastChange));
 						for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 							ShowChain.NodeInfo node = it.next();
 							// delete nodes that weren't active in 30 min
@@ -313,7 +320,7 @@ public class ServerAnswer {
 								}
 							}
 						}
-						if ((int) (System.currentTimeMillis() / 1000) - server.lastChange >= 5) {
+						if ((int) (System.currentTimeMillis() / 1000) - server.lastChange >= 5 * 60) {
 							server.tryConnection();
 							server.lastChange = (int) (System.currentTimeMillis() / 1000);
 						}
