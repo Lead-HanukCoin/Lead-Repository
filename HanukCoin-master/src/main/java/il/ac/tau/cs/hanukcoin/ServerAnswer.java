@@ -43,11 +43,11 @@ public class ServerAnswer {
 		}
 	}
 	private void saveFile(){
-		System.out.println("*");
+		//System.out.println("*");
 		try {
 			//System.out.println("--------------------------------------------------------------------------- " + );
 			fileConnection.sendToFileOrNode(2, fileConnection.dataOutput, true);
-			System.out.println("***");
+			//System.out.println("***");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -55,7 +55,6 @@ public class ServerAnswer {
 
 	private ShowChain.NodeInfo[] get3RandomNodes() {
 		NodeInfo[] arr = new NodeInfo[3];
-		System.out.println();
 		ArrayList<ShowChain.NodeInfo> nodes = new ArrayList<>();
 		for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 			ShowChain.NodeInfo node = it.next();
@@ -156,9 +155,9 @@ public class ServerAnswer {
 			sendToFileOrNode(cmd,dos,false);
 		}
 		private void sendToFileOrNode(int cmd, DataOutputStream dos, boolean file) throws IOException {
-			System.out.println("is file: " + file);
-			System.out.println("connections list hmap: " + ConnectionsList.hmap);
-			System.out.println("connections list active nodes: " + ConnectionsList.activeNodes);
+//			System.out.println("is file: " + file);
+//			System.out.println("connections list hmap: " + ConnectionsList.hmap);
+//			System.out.println("connections list active nodes: " + ConnectionsList.activeNodes);
 			dos.writeInt(cmd);
 			dos.writeInt(BEEF_BEEF);
 			if (!ConnectionsList.hmap.isEmpty()) {
@@ -298,11 +297,11 @@ public class ServerAnswer {
 	}
 
 	public static void main(String[] args) {
-		ServerAnswer.TeamName = args[2];
-		ServerAnswer.accepPort = Integer.parseInt(args[1]);
+		ServerAnswer.TeamName = args[1];
+		ServerAnswer.accepPort = Integer.parseInt(args[3]);
 		ServerAnswer.port = ServerAnswer.accepPort;
 		ServerAnswer server = new ServerAnswer();
-		ServerAnswer.host = "80.179.243.230";
+		ServerAnswer.host = args[2];
 //        try {
 //            ServerAnswer.host = InetAddress.getLocalHost().getHostAddress();
 //        } catch (UnknownHostException e) {
@@ -317,11 +316,11 @@ public class ServerAnswer {
 
 //		args = new String[] {"80.179.243.230:2005", "2007"};
 
-//		String[] parts = args[0].split(":");
-//		String addrTal = parts[0];
-//		int portTal = Integer.parseInt(parts[1]);
-//
-//		ConnectionsList.add(new NodeInfo("Earth" , addrTal, portTal,0));
+		String[] parts = args[0].split(":");
+		String addrTal = parts[0];
+		int portTal = Integer.parseInt(parts[1]);
+
+		ConnectionsList.add(new NodeInfo("Earth" , addrTal, portTal,0));
 
 		Thread firstMassage = new Thread( new Runnable() {
 			public void run() {
@@ -335,7 +334,7 @@ public class ServerAnswer {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				//server.sendReceive(addrTal, portTal);
+				server.sendReceive(addrTal, portTal);
 			}
 		});
 		firstMassage.start();
