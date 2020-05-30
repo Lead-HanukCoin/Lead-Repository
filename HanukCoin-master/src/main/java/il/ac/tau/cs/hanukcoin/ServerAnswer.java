@@ -32,7 +32,8 @@ public class ServerAnswer {
 		System.out.format(fmt + "\n", args);
 	}
 
-	private void readFile(DataInputStream dis, DataOutputStream dos){
+	private synchronized void readFile(DataInputStream dis, DataOutputStream dos){
+		
 		ClientConnection fileConnection = new ClientConnection(dis, dos);
 		this.fileConnection = fileConnection;
 		try {
@@ -42,10 +43,22 @@ public class ServerAnswer {
 			e.printStackTrace();
 		}
 	}
-	private void saveFile(){
+	private synchronized void saveFile(){
 		//System.out.println("*");
 		try {
 			//System.out.println("--------------------------------------------------------------------------- " + );
+			try {
+				File file = new File("connectionList.txt");
+				file.delete();
+				File newFile = new File("connectionList.txt");
+				DataOutputStream FileDataOut = new DataOutputStream(new FileOutputStream(file));
+				DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
+				ClientConnection fileConnection = new ClientConnection(FileDataIn, FileDataOut);
+				this.fileConnection = fileConnection;
+				FileDataIn.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			fileConnection.sendToFileOrNode(2, fileConnection.dataOutput, true);
 			//System.out.println("***");
 		} catch (IOException e) {
