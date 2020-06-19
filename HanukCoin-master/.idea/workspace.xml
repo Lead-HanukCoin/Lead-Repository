@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="53222514-64cb-4e49-8432-18df2e403918" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace-DESKTOP-1QNN1QU-2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace-DESKTOP-1QNN1QU.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace-ELKi1970-2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace-ELKi1970.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/connectionList.txt" beforeDir="false" afterPath="$PROJECT_DIR$/connectionList.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1dXU2kPflBJWG7jrLMTWbpytNPU" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="ServerAnswer" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="il.ac.tau.cs.hanukcoin.ServerAnswer" />
+      <option name="PROGRAM_PARAMETERS" value="35.246.17.73:8080 Lead 80.179.243.230 2005" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="53222514-64cb-4e49-8432-18df2e403918" name="Default Changelist" comment="" />
+      <created>1592570726116</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1592570726116</updated>
+      <workItem from="1592570852882" duration="177000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592571039694">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1592571039694" />
+    <state x="689" y="310" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1592570938441">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="689" y="310" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1592570938441" />
+  </component>
+</project>

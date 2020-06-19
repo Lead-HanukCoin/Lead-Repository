@@ -71,8 +71,7 @@ public class ServerAnswer {
 		ArrayList<ShowChain.NodeInfo> nodes = new ArrayList<>();
 		for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 			ShowChain.NodeInfo node = it.next();
-			if ((!node.host.equals(ServerAnswer.host) || node.port != ServerAnswer.port)
-					&& !ServerAnswer.waitingList.contains(node)) {
+			if ((!node.host.equals(ServerAnswer.host) || node.port != ServerAnswer.port) && !ServerAnswer.waitingList.contains(node)) {
 				nodes.add(node);
 			}
 		}
@@ -186,7 +185,8 @@ public class ServerAnswer {
 						node.writeInfo(dos);
 					}
 				}
-			} else {
+			}
+			else {
 				dos.writeInt(0);
 			}
 			dos.writeInt(DEAD_DEAD);
@@ -233,9 +233,12 @@ public class ServerAnswer {
 			synchronized (this) {
 				for (NodeInfo node : receivedNodes) {
 					if (!ConnectionsList.hmap.containsKey(new Pair(node.host, node.port))) {
-						changed = true;
-						ConnectionsList.add(node); // add a new node to hmap. isNew = true;
-					} else {
+						if (((int) (System.currentTimeMillis() / 1000 - node.lastSeenTS) < 30 * 60)) {
+							changed = true;
+							ConnectionsList.add(node); // add a new node to hmap. isNew = true;
+						}
+					}
+					else {
 						NodeInfo originalNode = ConnectionsList.hmap.get(new Pair<>(node.host, node.port));
 						originalNode.lastSeenTS = Math.max(originalNode.lastSeenTS, node.lastSeenTS); // the time stamp
 																										// is the
@@ -388,10 +391,7 @@ public class ServerAnswer {
 			}
 		});
 		fiveMin.start();
-//        ConnectionsList.add(new ShowChain.NodeInfo("Lead", "or", 50, 60));
-//        ConnectionsList.add(new ShowChain.NodeInfo("Lead1", "or1", 501, 601));
-//        ConnectionsList.add(new ShowChain.NodeInfo("Lead2", "or2", 502, 601));
-//        ConnectionsList.add(new ShowChain.NodeInfo("Lead3", "or3", 503, 601));
+
 		try {
 			server.runServer();
 		} catch (InterruptedException e) {
