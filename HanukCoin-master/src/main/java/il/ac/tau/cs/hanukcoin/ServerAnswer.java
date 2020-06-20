@@ -23,6 +23,9 @@ public class ServerAnswer {
 	public static String host;
 	public static int port;
 	ClientConnection fileConnection;
+	public static BlocksList blocksList = new BlocksList(new ArrayList<>());
+	public static Block genesis;
+	public static int walletCode;
 
 	public static void log(String fmt, Object... args) {
 		println(fmt, args);
@@ -45,12 +48,16 @@ public class ServerAnswer {
 	}
 	private synchronized void saveFile(){
 		//System.out.println("*");
+		System.out.println("--------------------------------------------------------------------------- ");
+//		File file = new File("connectionList.txt");
+//		file.delete();
+
 		try {
 			//System.out.println("--------------------------------------------------------------------------- " + );
 			try {
 				File file = new File("connectionList.txt");
 				file.delete();
-				File newFile = new File("connectionList.txt");
+//				File newFile = new File("connectionList.txt");
 				DataOutputStream FileDataOut = new DataOutputStream(new FileOutputStream(file));
 				DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
 				ClientConnection fileConnection = new ClientConnection(FileDataIn, FileDataOut);
@@ -60,7 +67,7 @@ public class ServerAnswer {
 				e.printStackTrace();
 			}
 			fileConnection.sendToFileOrNode(2, fileConnection.dataOutput, true);
-			//System.out.println("***");
+//			//System.out.println("***");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -190,15 +197,36 @@ public class ServerAnswer {
 				dos.writeInt(0);
 			}
 			dos.writeInt(DEAD_DEAD);
-			int blockChain_size = 0;
-			dos.writeInt(blockChain_size);
-			// TODO(students): sendRequest data of blocks
+			dos.writeInt(blocksList.blist.size());
+			for (Iterator<Block> it = blocksList.getBlocksIterator(); it.hasNext(); ){
+				Block block = it.next();
+				block.writeInfo(dos);
+			}
+			if (file){
+				DataInputStream dis = new DataInputStream(new FileInputStream(new File("connectionList.txt")));
+				//System.out.println("line");
+				parseMessage(dis);
+
+			}
 			if (!file)
 				ServerAnswer.waitingList.add(ConnectionsList.hmap.get(new Pair(this.host, this.port)));
 		}
 
 		public void parseMessage(DataInputStream dataInput) throws IOException {
 			System.out.println("<----> got new message!!");
+//			try {
+//				File myObj = new File("connectionList.txt");
+//				Scanner myReader = new Scanner(myObj);
+//				while (myReader.hasNextLine()) {
+//					String data = myReader.nextLine();
+//					System.out.println(data);
+//				}
+//				myReader.close();
+//			} catch (FileNotFoundException e) {
+//				System.out.println("An error occurred.");
+//				e.printStackTrace();
+//			}
+
 			int cmd = dataInput.readInt(); // skip command field
 			if (cmd != 1 && cmd != 2) {
 				throw new IOException("Bad message bad cmd");
@@ -228,6 +256,14 @@ public class ServerAnswer {
 				receivedBlocks.add(newBlock);
 			}
 
+			if (blocksList.blist.size() < receivedBlocks.size()){
+				if (receivedBlocks.get(0).equals(genesis)) {
+					BlocksList received = new BlocksList(receivedBlocks);
+					if (received.checkValid())
+						blocksList = received;
+				}
+			}
+
 			// update ConnectionsList.hmap
 			boolean changed = false;
 			synchronized (this) {
@@ -240,13 +276,7 @@ public class ServerAnswer {
 					}
 					else {
 						NodeInfo originalNode = ConnectionsList.hmap.get(new Pair<>(node.host, node.port));
-						originalNode.lastSeenTS = Math.max(originalNode.lastSeenTS, node.lastSeenTS); // the time stamp
-																										// is the
-																										// maximum
-																										// between the
-																										// one we have
-																										// and the new
-																										// one
+						originalNode.lastSeenTS = Math.max(originalNode.lastSeenTS, node.lastSeenTS); // the time stamp							// one
 					}
 				}
 			}
@@ -313,12 +343,41 @@ public class ServerAnswer {
 		}
 	}
 
+	static private byte[] parseByteStr(String s) {
+		ArrayList<Byte> a = new ArrayList<Byte>();
+		for (String hex : s.split("\\s+")) {
+			byte b = (byte) Integer.parseInt(hex, 16);
+			a.add(b);
+		}
+		byte[] result = new byte[a.size()];
+		for(int i = 0; i < a.size(); i++) {
+			result[i] = a.get(i);
+		}
+		return result;
+	}
+
+	public static Block createBlock0forTestStage() {
+		Block g = new Block();
+		g.data = parseByteStr(
+				"00 00 00 00  00 00 00 00  \n" +
+						"54 45 53 54  5F 52 30 32  \n" +
+						"A8 F5 DA 01  49 47 DF C1  \n" +
+						"F7 45 41 20  32 F2 88 C9  \n" +
+						"D8 22 0D CB \n");
+		return g;
+	}
+
+
 	public static void main(String[] args) {
 		ServerAnswer.TeamName = args[1];
 		ServerAnswer.accepPort = Integer.parseInt(args[3]);
 		ServerAnswer.port = ServerAnswer.accepPort;
 		ServerAnswer server = new ServerAnswer();
 		ServerAnswer.host = args[2];
+		ServerAnswer.walletCode = HanukCoinUtils.walletCode(args[2]);
+		ServerAnswer.genesis = createBlock0forTestStage();
+
+		System.out.println("wallet: " + Integer.toHexString(ServerAnswer.walletCode));
 //        try {
 //            ServerAnswer.host = InetAddress.getLocalHost().getHostAddress();
 //        } catch (UnknownHostException e) {
@@ -362,7 +421,7 @@ public class ServerAnswer {
 				while (true) {
 					try {
 						//System.out.println("<----> start 5 minutes sleep");
-						Thread.sleep(5 * 60000);
+						Thread.sleep(60*5 - ((int) (System.currentTimeMillis() / 1000) - server.lastChange));
 						//System.out.println("<----> 5 minutes sleep ended");
 						server.saveFile();
 						for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
@@ -391,6 +450,25 @@ public class ServerAnswer {
 			}
 		});
 		fiveMin.start();
+
+		Thread mining = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				ServerAnswer.blocksList.blist.add(genesis);
+				Block newBlock = null;
+				while(true){
+					while (newBlock == null){
+						newBlock = HanukCoinUtils.mineCoinAtteempt(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size()-1), 1000000);
+					}
+					System.out.println("done mining!");
+					synchronized (this) {
+						ServerAnswer.blocksList.blist.add(newBlock);
+					}
+					newBlock = null;
+				}
+			}
+		});
+		mining.start();
 
 		try {
 			server.runServer();

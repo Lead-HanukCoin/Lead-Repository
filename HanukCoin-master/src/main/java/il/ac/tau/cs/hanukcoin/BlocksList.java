@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class BlocksList {
-    public static ArrayList<Block> blist = new ArrayList<>();
+    public ArrayList<Block> blist = new ArrayList<>();
+
+    public BlocksList(ArrayList<Block> blist){
+        this.blist = blist;
+    }
 
     public Iterator<Block> getBlocksIterator(){
         return blist.iterator();

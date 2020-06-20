@@ -16,6 +16,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  * Class that represnts one block in the block chane.
@@ -47,6 +48,13 @@ public class Block {
         System.arraycopy(prevSig8, 0, b.data, 8, 8);
         return b;
     }
+
+    public boolean equals(Block other){
+        if (other != null)
+            return Arrays.equals(data, other.getBytes());
+        return false;
+    }
+
     public static Block create(int serialNumber, int walletNumber, byte[] prevSig8, byte[] puzzle8, byte[] sig12) {
         Block b = createNoSig(serialNumber, walletNumber, prevSig8);
         System.arraycopy(sig12, 0, b.data, 24, 12);
@@ -64,9 +72,9 @@ public class Block {
     public void writeInfo(DataOutputStream dos) throws IOException {
         dos.writeInt(this.getSerialNumber());
         dos.writeInt(this.getWalletNumber());
-        // TODO write prev sig
-        // TODO write puzzle
-        // TODO write sig
+        dos.write(this.data, 7, 8);
+        dos.write(this.data, 15, 8);
+        dos.write(this.data, 23, 12);
     }
 
     /**

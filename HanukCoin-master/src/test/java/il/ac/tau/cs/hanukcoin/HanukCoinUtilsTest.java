@@ -1,6 +1,7 @@
 package il.ac.tau.cs.hanukcoin;
 
 
+import junit.framework.TestCase;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;

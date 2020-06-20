@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Created by talfranji on 17/02/2020.
  */
-class ServerSimpleThreads {
+class  ServerSimpleThreads {
     protected static int accepPort = 2005;
 
 

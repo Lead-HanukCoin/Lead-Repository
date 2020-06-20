@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="53222514-64cb-4e49-8432-18df2e403918" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace-DESKTOP-1QNN1QU-2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace-DESKTOP-1QNN1QU.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace-ELKi1970-2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace-ELKi1970.xml" beforeDir="false" />
+    <list default="true" id="9883bd52-6ae7-487c-ae30-8d63ed83af07" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/connectionList.txt" beforeDir="false" afterPath="$PROJECT_DIR$/connectionList.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/Block.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/BlocksList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/BlocksList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerSimpleThreads.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerSimpleThreads.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/il/ac/tau/cs/hanukcoin/HanukCoinUtilsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/il/ac/tau/cs/hanukcoin/HanukCoinUtilsTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection$1.class" afterDir="false" />
@@ -33,52 +24,145 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="1dXU2kPflBJWG7jrLMTWbpytNPU" />
+  <component name="ProjectId" id="1dXY4Ti1mGfutn8wTdnjOFe9Zse" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.ServerAnswer">
     <configuration name="ServerAnswer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="il.ac.tau.cs.hanukcoin.ServerAnswer" />
-      <option name="PROGRAM_PARAMETERS" value="35.246.17.73:8080 Lead 80.179.243.230 2005" />
+      <module name="main" />
+      <option name="PROGRAM_PARAMETERS" value="35.246.17.73:8080 Lead1 213.57.218.162 1234" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ServerSimpleThreads" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="il.ac.tau.cs.hanukcoin.ServerSimpleThreads" />
+      <module name="main" />
+      <option name="PROGRAM_PARAMETERS" value="1234" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="il.ac.tau.cs.hanukcoin.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.ServerAnswer" />
+      <item itemvalue="Application.ServerSimpleThreads" />
+    </list>
   </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="53222514-64cb-4e49-8432-18df2e403918" name="Default Changelist" comment="" />
-      <created>1592570726116</created>
+      <changelist id="9883bd52-6ae7-487c-ae30-8d63ed83af07" name="Default Changelist" comment="" />
+      <created>1592572713249</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1592570726116</updated>
-      <workItem from="1592570852882" duration="177000" />
+      <updated>1592572713249</updated>
+      <workItem from="1592572714686" duration="206000" />
+      <workItem from="1592572945735" duration="6963000" />
+      <workItem from="1592581177458" duration="798000" />
+      <workItem from="1592660582640" duration="7852000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592571039694">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="360" y="49" key="#ServerSimpleThreads" timestamp="1592575131936">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1592571039694" />
-    <state x="689" y="310" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1592570938441">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="360" y="49" key="#ServerSimpleThreads/0.0.1280.680@0.0.1280.680" timestamp="1592575131936" />
+    <state x="-298" y="0" width="1293" height="680" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592668905729">
+      <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state x="689" y="310" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1592570938441" />
+    <state x="-199" y="0" width="1293" height="680" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1592575515164" />
+    <state x="-298" y="0" width="1312" height="1160" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592668905729" />
+    <state x="689" y="364" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1592573034678">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="689" y="364" key="#com.intellij.ide.util.TreeClassChooserDialog/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592573034678" />
+    <state x="740" y="281" key="FileChooserDialogImpl" timestamp="1592573062695">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="740" y="281" key="FileChooserDialogImpl/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592573062695" />
+    <state width="916" height="308" key="GridCell.Tab.0.bottom" timestamp="1592670450770">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1237" height="186" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
+    <state width="916" height="308" key="GridCell.Tab.0.bottom/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592670450770" />
+    <state width="916" height="308" key="GridCell.Tab.0.center" timestamp="1592670450770">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1237" height="186" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
+    <state width="916" height="308" key="GridCell.Tab.0.center/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592670450770" />
+    <state width="916" height="308" key="GridCell.Tab.0.left" timestamp="1592670450769">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1237" height="186" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
+    <state width="916" height="308" key="GridCell.Tab.0.left/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592670450769" />
+    <state width="916" height="308" key="GridCell.Tab.0.right" timestamp="1592670450770">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1237" height="186" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
+    <state width="916" height="308" key="GridCell.Tab.0.right/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592670450770" />
+    <state width="916" height="309" key="GridCell.Tab.1.bottom" timestamp="1592670429923">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1237" height="176" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1592581443621" />
+    <state width="916" height="309" key="GridCell.Tab.1.bottom/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592670429923" />
+    <state width="916" height="309" key="GridCell.Tab.1.center" timestamp="1592670429922">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1237" height="176" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1592581443621" />
+    <state width="916" height="309" key="GridCell.Tab.1.center/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592670429922" />
+    <state width="916" height="309" key="GridCell.Tab.1.left" timestamp="1592670429922">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1237" height="176" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1592581443621" />
+    <state width="916" height="309" key="GridCell.Tab.1.left/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592670429922" />
+    <state width="916" height="309" key="GridCell.Tab.1.right" timestamp="1592670429923">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1237" height="176" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1592581443621" />
+    <state width="916" height="309" key="GridCell.Tab.1.right/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592670429923" />
+    <state x="625" y="279" key="NewModule_or_Project.wizard" timestamp="1592572918907">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="625" y="279" key="NewModule_or_Project.wizard/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592572918907" />
+    <state x="506" y="281" key="com.intellij.ide.util.TipDialog" timestamp="1592660674902">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="337" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1592581222635" />
+    <state x="506" y="281" key="com.intellij.ide.util.TipDialog/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592660674902" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java</url>
+          <line>462</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
