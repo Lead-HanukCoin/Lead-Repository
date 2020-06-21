@@ -48,30 +48,27 @@ public class ServerAnswer {
 	}
 	private synchronized void saveFile(){
 		//System.out.println("*");
-		System.out.println("--------------------------------------------------------------------------- ");
+//		System.out.println("--------------------------------------------------------------------------- ");
 //		File file = new File("connectionList.txt");
 //		file.delete();
 
-		try {
 			//System.out.println("--------------------------------------------------------------------------- " + );
-			try {
-				File file = new File("connectionList.txt");
-				file.delete();
-//				File newFile = new File("connectionList.txt");
-				DataOutputStream FileDataOut = new DataOutputStream(new FileOutputStream(file));
-				DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
-				FileDataOut.writeBytes("");
-				ClientConnection fileConnection = new ClientConnection(FileDataIn, FileDataOut);
-				this.fileConnection = fileConnection;
-				FileDataIn.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try {
+			File file = new File("connectionList.txt");
+			file.delete();
+//			File newFile = new File("connectionList.txt");
+			DataOutputStream FileDataOut = new DataOutputStream(new FileOutputStream(file));
+			DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
+			FileDataOut.writeBytes("");
+			ClientConnection fileConnection = new ClientConnection(FileDataIn, FileDataOut);
+			this.fileConnection = fileConnection;
+			FileDataIn.close();
 			fileConnection.sendToFileOrNode(2, fileConnection.dataOutput, true);
-//			//System.out.println("***");
+			FileDataOut.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+//			//System.out.println("***");
 	}
 
 	private ShowChain.NodeInfo[] get3RandomNodes() {
