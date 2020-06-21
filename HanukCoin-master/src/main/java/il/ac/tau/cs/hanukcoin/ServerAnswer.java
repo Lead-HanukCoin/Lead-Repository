@@ -441,13 +441,13 @@ public class ServerAnswer {
 				while (true) {
 					try {
 						//System.out.println("<----> start 5 minutes sleep");
-						Thread.sleep(5*60000 - 1000*((int) (System.currentTimeMillis() / 1000) - server.lastChange));
+						Thread.sleep(5 * 60000 - 1000 * ((int) (System.currentTimeMillis() / 1000) - server.lastChange));
 						//System.out.println("<----> 5 minutes sleep ended");
 						server.saveFile();
 						for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 							ShowChain.NodeInfo node = it.next();
 							// delete nodes that weren't active in 30 min
-							if (((int) (System.currentTimeMillis() / 1000 - node.lastSeenTS) >= 30 * 60)) {
+							if ((((int) (System.currentTimeMillis() / 1000 - node.lastSeenTS)) * 1000 >= 30 * 60000)) {
 								ConnectionsList.hmap.remove(node);
 								if (!node.isNew) {
 									ConnectionsList.activeNodes.remove(node);
@@ -457,7 +457,7 @@ public class ServerAnswer {
 								}
 							}
 						}
-						if ((int) (System.currentTimeMillis() / 1000) - server.lastChange >= 5 * 60) {
+						if (((int) (System.currentTimeMillis() / 1000)) * 1000 - server.lastChange >= 5 * 60000) {
 							System.out.println("<----> 5 minutes since last call");
 							System.out.println("<----> try to connect to 3 nodes");
 							server.tryConnection();
@@ -494,7 +494,7 @@ public class ServerAnswer {
 					while (newBlock == null){
 						newBlock = HanukCoinUtils.mineCoinAtteempt(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size()-1), 1000000);
 					}
-					System.out.println("DONE MINING!!!");
+					System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 					System.out.println("block chain size: " + ServerAnswer.blocksList.blist.size());
 					synchronized (this) {
 						ServerAnswer.blocksList.blist.add(newBlock);
