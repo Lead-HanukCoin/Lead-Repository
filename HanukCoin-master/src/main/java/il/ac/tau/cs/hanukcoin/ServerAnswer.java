@@ -215,6 +215,8 @@ public class ServerAnswer {
 		}
 
 		public void parseMessage(DataInputStream dataInput) throws IOException {
+//			if (dataInput.available() == 0)
+//				return;
 			System.out.println("<----> got new message!!");
 //			try {
 //				File myObj = new File("connectionList.txt");
@@ -315,9 +317,9 @@ public class ServerAnswer {
 			// This function runs in a separate thread to handle the connection
 			// send ConnectionsList
 			parseMessage(dataInput);
-			dataInput.close();
-			dataOutput.close();
-			connectionSocket.close();
+//			dataInput.close();
+//			dataOutput.close();
+//			connectionSocket.close();
 		}
 	}
 
@@ -377,7 +379,8 @@ public class ServerAnswer {
 		ServerAnswer.port = ServerAnswer.accepPort;
 		ServerAnswer server = new ServerAnswer();
 		ServerAnswer.host = args[2];
-		ServerAnswer.walletCode = HanukCoinUtils.walletCode(args[1]);
+		//ServerAnswer.walletCode = HanukCoinUtils.walletCode(args[1]);
+		ServerAnswer.walletCode = HanukCoinUtils.walletCode("Lead");
 		ServerAnswer.genesis = createBlock0forTestStage();
 
 		System.out.println("wallet: " + Integer.toHexString(ServerAnswer.walletCode));
@@ -459,11 +462,26 @@ public class ServerAnswer {
 			public void run() {
 				ServerAnswer.blocksList.blist.add(genesis);
 				Block newBlock = null;
+				boolean weAreLast = false;
 				while(true){
+					synchronized (this) {
+						weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+					}
+					while (weAreLast) {
+						try {
+							Thread.sleep(1000);
+							synchronized (this) {
+								weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+							}
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
 					while (newBlock == null){
 						newBlock = HanukCoinUtils.mineCoinAtteempt(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size()-1), 1000000);
 					}
-					System.out.println("done mining!");
+					System.out.println("DONE MINING!!!");
+					System.out.println("block chain size: " + ServerAnswer.blocksList.blist.size());
 					synchronized (this) {
 						ServerAnswer.blocksList.blist.add(newBlock);
 					}

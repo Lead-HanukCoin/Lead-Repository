@@ -3,7 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="9883bd52-6ae7-487c-ae30-8d63ed83af07" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/Block.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/connectionList.txt" beforeDir="false" afterPath="$PROJECT_DIR$/connectionList.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +75,7 @@
       <workItem from="1592572945735" duration="6963000" />
       <workItem from="1592581177458" duration="798000" />
       <workItem from="1592660582640" duration="12017000" />
-      <workItem from="1592745062379" duration="2951000" />
+      <workItem from="1592745062379" duration="5949000" />
     </task>
     <servers />
   </component>
@@ -94,26 +100,26 @@
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
     <state x="740" y="281" key="FileChooserDialogImpl/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592573062695" />
-    <state width="1877" height="2" key="GridCell.Tab.0.bottom" timestamp="1592747747168">
+    <state width="1877" height="415" key="GridCell.Tab.0.bottom" timestamp="1592751711284">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
     <state width="1237" height="186" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
-    <state width="1877" height="2" key="GridCell.Tab.0.bottom/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592747747168" />
-    <state width="1877" height="2" key="GridCell.Tab.0.center" timestamp="1592747747167">
+    <state width="1877" height="415" key="GridCell.Tab.0.bottom/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592751711284" />
+    <state width="1877" height="415" key="GridCell.Tab.0.center" timestamp="1592751711284">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
     <state width="1237" height="186" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
-    <state width="1877" height="2" key="GridCell.Tab.0.center/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592747747167" />
-    <state width="1877" height="2" key="GridCell.Tab.0.left" timestamp="1592747747167">
+    <state width="1877" height="415" key="GridCell.Tab.0.center/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592751711284" />
+    <state width="1877" height="415" key="GridCell.Tab.0.left" timestamp="1592751711284">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
     <state width="1237" height="186" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
-    <state width="1877" height="2" key="GridCell.Tab.0.left/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592747747167" />
-    <state width="1877" height="2" key="GridCell.Tab.0.right" timestamp="1592747747167">
+    <state width="1877" height="415" key="GridCell.Tab.0.left/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592751711284" />
+    <state width="1877" height="415" key="GridCell.Tab.0.right" timestamp="1592751711284">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
     <state width="1237" height="186" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
-    <state width="1877" height="2" key="GridCell.Tab.0.right/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592747747167" />
+    <state width="1877" height="415" key="GridCell.Tab.0.right/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592751711284" />
     <state width="916" height="309" key="GridCell.Tab.1.bottom" timestamp="1592724852551">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
@@ -149,8 +155,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java</url>
-          <line>465</line>
+          <line>481</line>
           <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://C:/Program Files/Java/jdk1.8.0_241/src.zip!/java/io/DataInputStream.java</url>
+          <line>390</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
