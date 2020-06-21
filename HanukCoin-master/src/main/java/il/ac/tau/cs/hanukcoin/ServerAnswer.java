@@ -137,7 +137,7 @@ public class ServerAnswer {
 				// connectionThread would fail and kill thread
 			}
 		}
-		public ClientConnection(DataInputStream dis, DataOutputStream dos){
+		public ClientConnection(DataInputStream dis, DataOutputStream dos){ // for files only
 			dataInput = dis;
 			dataOutput = dos;
 		}
@@ -197,10 +197,12 @@ public class ServerAnswer {
 				dos.writeInt(0);
 			}
 			dos.writeInt(DEAD_DEAD);
-			dos.writeInt(blocksList.blist.size());
-			for (Iterator<Block> it = blocksList.getBlocksIterator(); it.hasNext(); ){
-				Block block = it.next();
-				block.writeInfo(dos);
+			synchronized (this) {
+				dos.writeInt(blocksList.blist.size());
+				for (Iterator<Block> it = blocksList.getBlocksIterator(); it.hasNext(); ) {
+					Block block = it.next();
+					block.writeInfo(dos);
+				}
 			}
 			if (file){
 				DataInputStream dis = new DataInputStream(new FileInputStream(new File("connectionList.txt")));
@@ -281,9 +283,10 @@ public class ServerAnswer {
 				}
 			}
 
-			if (cmd == 2) {
+			if (cmd == 2 && host != null) {
 				synchronized (this) {
 					Pair p = new Pair(this.host, this.port);
+					System.out.println("host: " + host + " port: " + port);
 					if (ConnectionsList.hmap.containsKey(p)) {
 						NodeInfo n = ConnectionsList.hmap.get(p); // sender
 						if (waitingList.contains(n)) {
@@ -374,7 +377,7 @@ public class ServerAnswer {
 		ServerAnswer.port = ServerAnswer.accepPort;
 		ServerAnswer server = new ServerAnswer();
 		ServerAnswer.host = args[2];
-		ServerAnswer.walletCode = HanukCoinUtils.walletCode(args[2]);
+		ServerAnswer.walletCode = HanukCoinUtils.walletCode(args[1]);
 		ServerAnswer.genesis = createBlock0forTestStage();
 
 		System.out.println("wallet: " + Integer.toHexString(ServerAnswer.walletCode));
@@ -421,7 +424,7 @@ public class ServerAnswer {
 				while (true) {
 					try {
 						//System.out.println("<----> start 5 minutes sleep");
-						Thread.sleep(60*5 - ((int) (System.currentTimeMillis() / 1000) - server.lastChange));
+						Thread.sleep(60000*5 - 1000*((int) (System.currentTimeMillis() / 1000) - server.lastChange));
 						//System.out.println("<----> 5 minutes sleep ended");
 						server.saveFile();
 						for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
