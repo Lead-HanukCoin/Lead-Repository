@@ -72,9 +72,9 @@ public class Block {
     public void writeInfo(DataOutputStream dos) throws IOException {
         dos.writeInt(this.getSerialNumber());
         dos.writeInt(this.getWalletNumber());
-        dos.write(this.data, 7, 8);
-        dos.write(this.data, 15, 8);
-        dos.write(this.data, 23, 12);
+        dos.write(this.data, 8, 8);
+        dos.write(this.data, 16, 8);
+        dos.write(this.data, 24, 12);
     }
 
     /**
