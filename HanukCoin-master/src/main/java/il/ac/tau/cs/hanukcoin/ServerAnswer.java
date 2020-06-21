@@ -447,7 +447,7 @@ public class ServerAnswer {
 						for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 							ShowChain.NodeInfo node = it.next();
 							// delete nodes that weren't active in 30 min
-							if ((((int) (System.currentTimeMillis() / 1000 - node.lastSeenTS)) * 1000 >= 30 * 60000)) {
+							if ((((int) (System.currentTimeMillis() / 1000 - node.lastSeenTS)) >= 30 * 60)) {
 								ConnectionsList.hmap.remove(node);
 								if (!node.isNew) {
 									ConnectionsList.activeNodes.remove(node);
@@ -457,7 +457,7 @@ public class ServerAnswer {
 								}
 							}
 						}
-						if (((int) (System.currentTimeMillis() / 1000)) * 1000 - server.lastChange >= 5 * 60000) {
+						if (((int) (System.currentTimeMillis() / 1000)) - server.lastChange >= 5 * 60) {
 							System.out.println("<----> 5 minutes since last call");
 							System.out.println("<----> try to connect to 3 nodes");
 							server.tryConnection();
@@ -494,7 +494,7 @@ public class ServerAnswer {
 					while (newBlock == null){
 						newBlock = HanukCoinUtils.mineCoinAtteempt(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size()-1), 1000000);
 					}
-					System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+					System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 					System.out.println("block chain size: " + ServerAnswer.blocksList.blist.size());
 					synchronized (this) {
 						ServerAnswer.blocksList.blist.add(newBlock);

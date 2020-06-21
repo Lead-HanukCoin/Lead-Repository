@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9883bd52-6ae7-487c-ae30-8d63ed83af07" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/connectionList.txt" beforeDir="false" afterPath="$PROJECT_DIR$/connectionList.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -24,6 +25,13 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
   </component>
   <component name="RunManager" selected="Application.ServerAnswer">
@@ -69,7 +77,8 @@
       <workItem from="1592581177458" duration="798000" />
       <workItem from="1592660582640" duration="12017000" />
       <workItem from="1592745062379" duration="13069000" />
-      <workItem from="1592765040626" duration="971000" />
+      <workItem from="1592765040626" duration="1164000" />
+      <workItem from="1592766850721" duration="1958000" />
     </task>
     <servers />
   </component>
@@ -81,11 +90,11 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="360" y="49" key="#ServerSimpleThreads/0.0.1280.680@0.0.1280.680" timestamp="1592575131936" />
-    <state x="-128" y="0" width="1293" height="680" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592765691538">
+    <state x="-128" y="0" width="1293" height="680" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592766989572">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-199" y="0" width="1293" height="680" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1592575515164" />
-    <state x="-128" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1592765691538" />
+    <state x="-128" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1592766989572" />
     <state x="-128" y="0" width="1312" height="1160" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1592764770387" />
     <state x="689" y="364" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1592573034678">
       <screen x="0" y="0" width="1920" height="1160" />
