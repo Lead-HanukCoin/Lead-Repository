@@ -154,6 +154,8 @@ public class HanukCoinUtils {
         Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
         Random rand = new Random();
         for (int attempt= 0; attempt < attemptsCount; attempt++) {
+            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber())
+                return null;
             long puzzle = rand.nextLong();
             newBlock.setLongPuzzle(puzzle);
             Block.BlockError result = newBlock.checkSignature();

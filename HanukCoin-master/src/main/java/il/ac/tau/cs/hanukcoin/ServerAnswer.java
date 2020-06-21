@@ -123,6 +123,7 @@ public class ServerAnswer {
 		Socket connectionSocket;
 		public String host;
 		public int port;
+		int errorCounter = 0;
 
 		public ClientConnection(Socket connectionSocket, boolean incomming) {
 			String addr = connectionSocket.getRemoteSocketAddress().toString();
@@ -231,6 +232,20 @@ public class ServerAnswer {
 //				e.printStackTrace();
 //			}
 
+
+
+//			int cmd = 0;
+//			synchronized (this) {
+//				if (errorCounter > 5) {
+//					return;
+//				}
+//				try {
+//					cmd = dataInput.readInt(); // skip command field
+//				} catch (EOFException e) {
+//					errorCounter++;
+//					return;
+//				}
+//			}
 			int cmd = dataInput.readInt(); // skip command field
 			if (cmd != 1 && cmd != 2) {
 				throw new IOException("Bad message bad cmd");
@@ -379,8 +394,8 @@ public class ServerAnswer {
 		ServerAnswer.port = ServerAnswer.accepPort;
 		ServerAnswer server = new ServerAnswer();
 		ServerAnswer.host = args[2];
-		//ServerAnswer.walletCode = HanukCoinUtils.walletCode(args[1]);
-		ServerAnswer.walletCode = HanukCoinUtils.walletCode("Lead");
+		ServerAnswer.walletCode = HanukCoinUtils.walletCode(args[1]);
+		//ServerAnswer.walletCode = HanukCoinUtils.walletCode("Lead");
 		ServerAnswer.genesis = createBlock0forTestStage();
 
 		System.out.println("wallet: " + Integer.toHexString(ServerAnswer.walletCode));
@@ -482,6 +497,7 @@ public class ServerAnswer {
 					}
 					System.out.println("DONE MINING!!!");
 					System.out.println("block chain size: " + ServerAnswer.blocksList.blist.size());
+					server.tryConnection();
 					synchronized (this) {
 						ServerAnswer.blocksList.blist.add(newBlock);
 					}
