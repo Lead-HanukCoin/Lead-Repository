@@ -60,6 +60,7 @@ public class ServerAnswer {
 //				File newFile = new File("connectionList.txt");
 				DataOutputStream FileDataOut = new DataOutputStream(new FileOutputStream(file));
 				DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
+				FileDataOut.writeBytes("");
 				ClientConnection fileConnection = new ClientConnection(FileDataIn, FileDataOut);
 				this.fileConnection = fileConnection;
 				FileDataIn.close();
@@ -439,10 +440,11 @@ public class ServerAnswer {
 		Thread fiveMin = new Thread(new Runnable() {
 			@Override
 			public void run() {
+				server.saveFile();
 				while (true) {
 					try {
 						//System.out.println("<----> start 5 minutes sleep");
-						Thread.sleep(60000*5 - 1000*((int) (System.currentTimeMillis() / 1000) - server.lastChange));
+						Thread.sleep(5*60000 - 1000*((int) (System.currentTimeMillis() / 1000) - server.lastChange));
 						//System.out.println("<----> 5 minutes sleep ended");
 						server.saveFile();
 						for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
@@ -497,10 +499,10 @@ public class ServerAnswer {
 					}
 					System.out.println("DONE MINING!!!");
 					System.out.println("block chain size: " + ServerAnswer.blocksList.blist.size());
-					server.tryConnection();
 					synchronized (this) {
 						ServerAnswer.blocksList.blist.add(newBlock);
 					}
+					server.tryConnection();
 					newBlock = null;
 				}
 			}

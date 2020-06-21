@@ -155,7 +155,6 @@ public class HanukCoinUtils {
         Random rand = new Random();
         for (int attempt= 0; attempt < attemptsCount; attempt++) {
             if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber()+1) {
-                System.out.println("minimg error");
                 return null;
             }
             long puzzle = rand.nextLong();
