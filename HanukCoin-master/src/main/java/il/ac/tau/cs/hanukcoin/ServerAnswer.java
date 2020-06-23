@@ -491,20 +491,75 @@ public class ServerAnswer {
 							e.printStackTrace();
 						}
 					}
-					while (newBlock == null){
-						newBlock = HanukCoinUtils.mineCoinAtteempt(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size()-1), 1000000);
+					int blockhainsize = ServerAnswer.blocksList.blist.size();
+					System.out.println("Thread0 - start mining attempt!!");
+					while (newBlock == null) {
+						newBlock = HanukCoinUtils.mineCoinAtteempt(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
 					}
-					System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-					System.out.println("block chain size: " + ServerAnswer.blocksList.blist.size());
-					synchronized (this) {
-						ServerAnswer.blocksList.blist.add(newBlock);
+					if (blockhainsize == ServerAnswer.blocksList.blist.size()) {
+						System.out.println("Thread0 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+						System.out.println("Thread0 - block chain size: " + ServerAnswer.blocksList.blist.size());
+						synchronized (this) {
+							ServerAnswer.blocksList.blist.add(newBlock);
+						}
+						server.tryConnection();
 					}
-					server.tryConnection();
+					else if(!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)){
+						System.out.println("Thread0 - mineCoinAtteempt failed, someone else have already got a coin");
+					}
+					else {
+						System.out.println("Thread0 - can't mine, we are last!");
+					}
 					newBlock = null;
 				}
 			}
 		});
 		mining.start();
+//
+//		Thread mining1 = new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+////				ServerAnswer.blocksList.blist.add(genesis);
+//				Block newBlock = null;
+//				//Block newBlock1 = null;
+//				boolean weAreLast = false;
+//				while(true){
+//					synchronized (this) {
+//						weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+//					}
+//					while (weAreLast) {
+//						try {
+//							Thread.sleep(1000);
+//							synchronized (this) {
+//								weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+//							}
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//					int blockhainsize = ServerAnswer.blocksList.blist.size();
+//					while (newBlock == null) {
+//						newBlock = HanukCoinUtils.mineCoinAtteempt(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
+//					}
+//					if (blockhainsize == ServerAnswer.blocksList.blist.size()) {
+//						System.out.println("Thread1 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+//						System.out.println("Thread1 - block chain size: " + ServerAnswer.blocksList.blist.size());
+//						synchronized (this) {
+//							ServerAnswer.blocksList.blist.add(newBlock);
+//						}
+//						server.tryConnection();
+//					}
+//					else if(!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)){
+//						System.out.println("Thread1 - mineCoinAtteempt failed, someone else have already got a coin");
+//					}
+//					else {
+//						System.out.println("Thread1 - another thread already mine a coin!");
+//					}
+//					newBlock = null;
+//				}
+//			}
+//		});
+//		mining1.start();
 
 		try {
 			server.runServer();
