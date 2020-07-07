@@ -35,12 +35,13 @@ public class ServerAnswer {
 		System.out.format(fmt + "\n", args);
 	}
 
-	private synchronized void readFile(DataInputStream dis, DataOutputStream dos){
+	private synchronized void readFile(DataInputStream dis){
 		
-		ClientConnection fileConnection = new ClientConnection(dis, dos);
+		ClientConnection fileConnection = new ClientConnection(dis, null);
 		this.fileConnection = fileConnection;
 		try {
 			fileConnection.parseMessage(dis);
+			dis.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -58,11 +59,11 @@ public class ServerAnswer {
 			file.delete();
 //			File newFile = new File("connectionList.txt");
 			DataOutputStream FileDataOut = new DataOutputStream(new FileOutputStream(file));
-			DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
+//			DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
 			FileDataOut.writeBytes("");
-			ClientConnection fileConnection = new ClientConnection(FileDataIn, FileDataOut);
+			ClientConnection fileConnection = new ClientConnection(null, FileDataOut);
 			this.fileConnection = fileConnection;
-			FileDataIn.close();
+//			FileDataIn.close();
 			fileConnection.sendToFileOrNode(2, fileConnection.dataOutput, true);
 			FileDataOut.close();
 		} catch (IOException e) {
@@ -422,9 +423,8 @@ public class ServerAnswer {
 
 				try {
 					File file = new File("connectionList.txt");
-					DataOutputStream FileDataOut = new DataOutputStream(new FileOutputStream(file));
 					DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
-					server.readFile(FileDataIn, FileDataOut);
+					server.readFile(FileDataIn);
 					FileDataIn.close();
 				} catch (IOException e) {
 					e.printStackTrace();
