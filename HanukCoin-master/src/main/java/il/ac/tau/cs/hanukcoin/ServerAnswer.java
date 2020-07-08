@@ -21,6 +21,7 @@ public class ServerAnswer {
 	public static ArrayList<ShowChain.NodeInfo> waitingList = new ArrayList<>();
 	public static int lastChange = (int) (System.currentTimeMillis() / 1000);
 	public static String host;
+	public static String pathname;
 	public static int port;
 	ClientConnection fileConnection;
 	public static BlocksList blocksList = new BlocksList(new ArrayList<>());
@@ -50,14 +51,14 @@ public class ServerAnswer {
 	private synchronized void saveFile(){
 		//System.out.println("*");
 //		System.out.println("--------------------------------------------------------------------------- ");
-//		File file = new File("connectionList.txt");
+//		File file = new File("" + args[4]);
 //		file.delete();
 
 			//System.out.println("--------------------------------------------------------------------------- " + );
 		try {
-			File file = new File("connectionList.txt");
+			File file = new File(ServerAnswer.pathname);
 			file.delete();
-//			File newFile = new File("connectionList.txt");
+//			File newFile = new File(ServerAnswer.pathname);
 			DataOutputStream FileDataOut = new DataOutputStream(new FileOutputStream(file));
 //			DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
 			FileDataOut.writeBytes("");
@@ -90,8 +91,24 @@ public class ServerAnswer {
 		return arr;
 	}
 
-	private void tryConnection() {
-		ShowChain.NodeInfo[] nodeArray = get3RandomNodes();
+	private void tryConnection(int aon) {
+		ShowChain.NodeInfo[] nodeArray;
+		if (aon == 0) {
+			nodeArray = get3RandomNodes();
+		}
+		else {
+			ArrayList<ShowChain.NodeInfo> nodes = new ArrayList<>();
+			for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
+				ShowChain.NodeInfo node = it.next();
+				if ((!node.host.equals(ServerAnswer.host) || node.port != ServerAnswer.port) && !ServerAnswer.waitingList.contains(node)) {
+					nodes.add(node);
+				}
+			}
+			nodeArray = new ShowChain.NodeInfo[nodes.size()];
+			for (int i = 0; i < nodes.size(); i++) {
+				nodeArray[i] = nodes.get(i);
+			}
+		}
 		synchronized (this) {
 			for (ShowChain.NodeInfo node : nodeArray) {
 				if (node != null) {
@@ -205,7 +222,7 @@ public class ServerAnswer {
 				}
 			}
 			if (file){
-				DataInputStream dis = new DataInputStream(new FileInputStream(new File("connectionList.txt")));
+				DataInputStream dis = new DataInputStream(new FileInputStream(new File(ServerAnswer.pathname)));
 				//System.out.println("line");
 				parseMessage(dis);
 
@@ -219,7 +236,7 @@ public class ServerAnswer {
 //				return;
 			System.out.println("<----> got new message!!");
 //			try {
-//				File myObj = new File("connectionList.txt");
+//				File myObj = new File(ServerAnswer.pathname);
 //				Scanner myReader = new Scanner(myObj);
 //				while (myReader.hasNextLine()) {
 //					String data = myReader.nextLine();
@@ -302,7 +319,7 @@ public class ServerAnswer {
 			if (cmd == 2 && host != null) {
 				synchronized (this) {
 					Pair p = new Pair(this.host, this.port);
-					System.out.println("host: " + host + " port: " + port);
+					System.out.println("<----> host: " + host + " port: " + port);
 					if (ConnectionsList.hmap.containsKey(p)) {
 						NodeInfo n = ConnectionsList.hmap.get(p); // sender
 						if (waitingList.contains(n)) {
@@ -322,7 +339,7 @@ public class ServerAnswer {
 				lastChange = (int) (System.currentTimeMillis() / 1000);
 				System.out.println("<----> got new node!");
 				System.out.println("<----> try to connect to 3 nodes");
-				tryConnection();
+				tryConnection(0);
 			}
 
 		}
@@ -373,16 +390,18 @@ public class ServerAnswer {
 			result[i] = a.get(i);
 		}
 		return result;
+
 	}
 
 	public static Block createBlock0forTestStage() {
 		Block g = new Block();
 		g.data = parseByteStr(
 				"00 00 00 00  00 00 00 00  \n" +
-						"54 45 53 54  5F 52 30 32  \n" +
-						"A8 F5 DA 01  49 47 DF C1  \n" +
-						"F7 45 41 20  32 F2 88 C9  \n" +
-						"D8 22 0D CB \n");
+						"54 45 53 54  5F 52 30 33  \n" +
+						"10 CB A5 5D  35 54 EB B1  \n" +
+						"D1 68 89 8E  DF 59 97 45  \n" +
+						"68 F7 64 5F \n");
+
 		return g;
 	}
 
@@ -396,6 +415,7 @@ public class ServerAnswer {
 		ServerAnswer.walletCode = HanukCoinUtils.walletCode(args[1]);
 		//ServerAnswer.walletCode = HanukCoinUtils.walletCode("Lead");
 		ServerAnswer.genesis = createBlock0forTestStage();
+		ServerAnswer.pathname = args[4];
 
 		System.out.println("wallet: " + Integer.toHexString(ServerAnswer.walletCode));
 //        try {
@@ -422,7 +442,7 @@ public class ServerAnswer {
 			public void run() {
 
 				try {
-					File file = new File("connectionList.txt");
+					File file = new File(ServerAnswer.pathname);
 					DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
 					server.readFile(FileDataIn);
 					FileDataIn.close();
@@ -460,7 +480,7 @@ public class ServerAnswer {
 						if (((int) (System.currentTimeMillis() / 1000)) - server.lastChange >= 5 * 60) {
 							System.out.println("<----> 5 minutes since last call");
 							System.out.println("<----> try to connect to 3 nodes");
-							server.tryConnection();
+							server.tryConnection(0);
 							server.lastChange = (int) (System.currentTimeMillis() / 1000);
 						}
 					} catch (InterruptedException e) {
@@ -477,6 +497,9 @@ public class ServerAnswer {
 				ServerAnswer.blocksList.blist.add(genesis);
 				Block newBlock = null;
 				boolean weAreLast = false;
+				long avgtime = 0L;
+				long timeofmine;
+				int numofcoins = 0;
 				while(true){
 					synchronized (this) {
 						weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
@@ -493,16 +516,22 @@ public class ServerAnswer {
 					}
 					int blockhainsize = ServerAnswer.blocksList.blist.size();
 					System.out.println("Thread0 - start mining attempt!!");
+					long startime = System.currentTimeMillis() / 1000;
 					while (newBlock == null) {
 						newBlock = HanukCoinUtils.mineCoinAtteempt(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
 					}
 					if (blockhainsize == ServerAnswer.blocksList.blist.size()) {
+						numofcoins++;
 						System.out.println("Thread0 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 						System.out.println("Thread0 - block chain size: " + ServerAnswer.blocksList.blist.size());
+						timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
+						System.out.println("Thread0 - time of mining: " + timeofmine + " seconds");
+						avgtime += timeofmine;
+						System.out.println("Thread0 - average time of mining: " + (avgtime / numofcoins)  + " seconds");
 						synchronized (this) {
 							ServerAnswer.blocksList.blist.add(newBlock);
 						}
-						server.tryConnection();
+						server.tryConnection(1);
 					}
 					else if(!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)){
 						System.out.println("Thread0 - mineCoinAtteempt failed, someone else have already got a coin");
