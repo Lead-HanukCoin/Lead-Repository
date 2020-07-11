@@ -95,15 +95,30 @@ public class ServerAnswer {
 		return arr;
 	}
 
-	private void tryConnection() {
-		ShowChain.NodeInfo[] nodeArray = get3RandomNodes();
-		synchronized (this) {
-			for (ShowChain.NodeInfo node : nodeArray) {
-				if (node != null) {
-					if (node.port == ServerAnswer.port && node.host.equals(ServerAnswer.host)) {
-						System.out.println("ERROR, ME RETURNED");
+	private void tryConnection(boolean b) {
+		if (!b){
+			ShowChain.NodeInfo[] nodeArray = get3RandomNodes();
+			synchronized (this) {
+				for (ShowChain.NodeInfo node : nodeArray) {
+					if (node != null) {
+						if (node.port == ServerAnswer.port && node.host.equals(ServerAnswer.host)) {
+							System.out.println("ERROR, ME RETURNED");
+						}
+						sendReceive(node.host, node.port);
 					}
-					sendReceive(node.host, node.port);
+				}
+			}
+		}
+		else {
+			System.out.println("<----> sending massage to all nodes in the connectionlist!!");
+			synchronized (this) {
+				ArrayList<ShowChain.NodeInfo> nodeArray = ConnectionsList.activeNodes;
+				for (ShowChain.NodeInfo node : nodeArray) {
+					if (node != null) {
+						if (!(node.port == ServerAnswer.port && node.host.equals(ServerAnswer.host))) {
+							sendReceive(node.host, node.port);
+						}
+					}
 				}
 			}
 		}
@@ -330,7 +345,7 @@ public class ServerAnswer {
 				lastChange = (int) (System.currentTimeMillis() / 1000);
 				System.out.println("<----> got new node!");
 				System.out.println("<----> try to connect to 3 nodes");
-				tryConnection();
+				tryConnection(false);
 			}
 
 		}
@@ -381,20 +396,19 @@ public class ServerAnswer {
 			result[i] = a.get(i);
 		}
 		return result;
-
 	}
 
 	public static Block createBlock0forTestStage() {
 		Block g = new Block();
-		g.data = parseByteStr(
-				"00 00 00 00  00 00 00 00  \n" +
-						"54 45 53 54  5F 52 30 33  \n" +
-						"10 CB A5 5D  35 54 EB B1  \n" +
-						"D1 68 89 8E  DF 59 97 45  \n" +
-						"68 F7 64 5F \n");
+		g.data = parseByteStr("00 00 00 00  00 00 00 00  \n" +
+				"43 4F 4E 54  45 53 54 30  \n" +
+				"6C E4 BA AA  70 1C E0 FC  \n" +
+				"4B 72 9D 93  A2 28 FB 27  \n" +
+				"4D 11 E7 25 ");
 
 		return g;
 	}
+
 
 
 
@@ -480,7 +494,7 @@ public class ServerAnswer {
 						if (((int) (System.currentTimeMillis() / 1000)) - server.lastChange >= 5 * 60) {
 							System.out.println("<----> 5 minutes since last call");
 							System.out.println("<----> try to connect to 3 nodes");
-							server.tryConnection();
+							server.tryConnection(false);
 							server.lastChange = (int) (System.currentTimeMillis() / 1000.);
 						}
 					} catch (InterruptedException e) {
@@ -500,9 +514,11 @@ public class ServerAnswer {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					if (ServerAnswer.tryconnection) {
-                        ServerAnswer.tryconnection = false;
-					    server.tryConnection();
+					synchronized (this){
+						if (ServerAnswer.tryconnection) {
+							ServerAnswer.tryconnection = false;
+							server.tryConnection(true);
+						}
 					}
 				}
 			}
@@ -512,54 +528,56 @@ public class ServerAnswer {
 		Thread mining = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				ServerAnswer.blocksList.blist.add(genesis);
 				Block newBlock = null;
 				boolean weAreLast = false;
 				long timeofmine;
-				while(true){
-					synchronized (this) {
-						weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-					}
-					while (weAreLast) {
-						try {
-							Thread.sleep(250);
+				while (true) {
+					try {
+						synchronized (this) {
+							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+						}
+						while (weAreLast) {
+							try {
+								Thread.sleep(250);
+								synchronized (this) {
+									weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+								}
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						System.out.println("Thread0 - start mining attempt!!");
+						long startime = System.currentTimeMillis() / 1000;
+						while (newBlock == null && !weAreLast) {
 							synchronized (this) {
+								newBlock = HanukCoinUtils.mineCoinAtteempt0(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
 								weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
 							}
-						} catch (InterruptedException e) {
-							e.printStackTrace();
 						}
-					}
-					System.out.println("Thread0 - start mining attempt!!");
-					long startime = System.currentTimeMillis() / 1000;
-					while (newBlock == null && !weAreLast) {
-						newBlock = HanukCoinUtils.mineCoinAtteempt0(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
-						synchronized (this){
-							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-						}					}
-					if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
-						ServerAnswer.numofcoins++;
-						System.out.println("Thread0 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-						synchronized (this){
-							System.out.println("Thread0 - block chain size: " + ServerAnswer.blocksList.blist.size());
-						}						timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
-						System.out.println("Thread0 - time of mining: " + timeofmine + " seconds");
-						ServerAnswer.avgtime += timeofmine;
-						System.out.println("Thread0 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins)  + " seconds");
 						synchronized (this) {
-							ServerAnswer.blocksList.blist.add(newBlock);
-							ServerAnswer.tryconnection = !ServerAnswer.tryconnection;
+							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
+								ServerAnswer.numofcoins++;
+								System.out.println("Thread0 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+								System.out.println("Thread0 - block chain size: " + ServerAnswer.blocksList.blist.size());
+								timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
+								System.out.println("Thread0 - time of mining: " + timeofmine + " seconds");
+								ServerAnswer.avgtime += timeofmine;
+								System.out.println("Thread0 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
+								ServerAnswer.blocksList.blist.add(newBlock);
+								ServerAnswer.tryconnection = true;
+							} else {
+								System.out.println("Thread0 - another thread already mine a coin!");
+							}
 						}
+						newBlock = null;
+					}
+
+					catch (ArrayIndexOutOfBoundsException ignored) {
 
 					}
-					else {
-						System.out.println("Thread0 - another thread already mine a coin!");
-					}
-					newBlock = null;
 				}
 			}
 		});
-		//mining.start();
 
 		Thread mining1 = new Thread(new Runnable() {
 			@Override
@@ -567,164 +585,170 @@ public class ServerAnswer {
 				Block newBlock = null;
 				boolean weAreLast = false;
 				long timeofmine;
-				while(true){
-                    synchronized (this) {
-                        weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-                    }
-                    while (weAreLast) {
-                        try {
-                            Thread.sleep(250);
-                            synchronized (this) {
-                                weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-					System.out.println("Thread1 - start mining attempt!!");
-					long startime = System.currentTimeMillis() / 1000;
-					while (newBlock == null && !weAreLast) {
-						newBlock = HanukCoinUtils.mineCoinAtteempt1(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
-						synchronized (this){
-							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-						}					}
-					if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
-						ServerAnswer.numofcoins++;
-						System.out.println("Thread1 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-						synchronized (this){
-							System.out.println("Thread1 - block chain size: " + ServerAnswer.blocksList.blist.size());
-						}
-						timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
-						System.out.println("Thread1 - time of mining: " + timeofmine + " seconds");
-						ServerAnswer.avgtime += timeofmine;
-						System.out.println("Thread1 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins)  + " seconds");
+				while (true) {
+					try {
 						synchronized (this) {
-							ServerAnswer.blocksList.blist.add(newBlock);
-							ServerAnswer.tryconnection = !ServerAnswer.tryconnection;
+							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
 						}
+						while (weAreLast) {
+							try {
+								Thread.sleep(250);
+								synchronized (this) {
+									weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+								}
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						System.out.println("Thread1 - start mining attempt!!");
+						long startime = System.currentTimeMillis() / 1000;
+						while (newBlock == null && !weAreLast) {
+							synchronized (this) {
+								newBlock = HanukCoinUtils.mineCoinAtteempt1(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
+								weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+							}
+						}
+						synchronized (this) {
+							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
+								ServerAnswer.numofcoins++;
+								System.out.println("Thread1 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+								System.out.println("Thread1 - block chain size: " + ServerAnswer.blocksList.blist.size());
+								timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
+								System.out.println("Thread1 - time of mining: " + timeofmine + " seconds");
+								ServerAnswer.avgtime += timeofmine;
+								System.out.println("Thread1 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
+								ServerAnswer.blocksList.blist.add(newBlock);
+								ServerAnswer.tryconnection = true;
+							} else {
+								System.out.println("Thread1 - another thread already mine a coin!");
+							}
+						}
+						newBlock = null;
 					}
-					else {
-						System.out.println("Thread1 - another thread already mine a coin!");
+
+					catch (ArrayIndexOutOfBoundsException ignored) {
+
 					}
-					newBlock = null;
 				}
 			}
 		});
-		//mining1.start();
 
         Thread mining2 = new Thread(new Runnable() {
             @Override
-            public void run() {
-                ServerAnswer.blocksList.blist.add(genesis);
-                Block newBlock = null;
-                boolean weAreLast = false;
-                long timeofmine;
-                while(true){
-                    synchronized (this) {
-                        weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-                    }
-                    while (weAreLast) {
-                        try {
-                            Thread.sleep(250);
-                            synchronized (this) {
-                                weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    System.out.println("Thread2 - start mining attempt!!");
-                    long startime = System.currentTimeMillis() / 1000;
-                    while (newBlock == null && !weAreLast) {
-						newBlock = HanukCoinUtils.mineCoinAtteempt2(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
+			public void run() {
+				Block newBlock = null;
+				boolean weAreLast = false;
+				long timeofmine;
+				while (true) {
+					try {
 						synchronized (this) {
 							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
 						}
-					}
-                    if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
-						ServerAnswer.numofcoins++;
-                        System.out.println("Thread2 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-						synchronized (this){
-							System.out.println("Thread2 - block chain size: " + ServerAnswer.blocksList.blist.size());
+						while (weAreLast) {
+							try {
+								Thread.sleep(250);
+								synchronized (this) {
+									weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+								}
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
 						}
-						timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
-                        System.out.println("Thread2 - time of mining: " + timeofmine + " seconds");
-						ServerAnswer.avgtime += timeofmine;
-                        System.out.println("Thread2 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins)  + " seconds");
-                        synchronized (this) {
-                            ServerAnswer.blocksList.blist.add(newBlock);
-							ServerAnswer.tryconnection = !ServerAnswer.tryconnection;
-                        }
-                    }
-                    else {
-                        System.out.println("Thread2 - another thread already mine a coin!");
-                    }
-                    newBlock = null;
-                }
-            }
+						System.out.println("Thread2 - start mining attempt!!");
+						long startime = System.currentTimeMillis() / 1000;
+						while (newBlock == null && !weAreLast) {
+							synchronized (this) {
+								newBlock = HanukCoinUtils.mineCoinAtteempt2(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
+								weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+							}
+						}
+						synchronized (this) {
+							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
+								ServerAnswer.numofcoins++;
+								System.out.println("Thread2 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+								System.out.println("Thread2 - block chain size: " + ServerAnswer.blocksList.blist.size());
+								timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
+								System.out.println("Thread2 - time of mining: " + timeofmine + " seconds");
+								ServerAnswer.avgtime += timeofmine;
+								System.out.println("Thread2 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
+								ServerAnswer.blocksList.blist.add(newBlock);
+								ServerAnswer.tryconnection = true;
+							} else {
+								System.out.println("Thread2 - another thread already mine a coin!");
+							}
+						}
+						newBlock = null;
+					}
+
+					catch (ArrayIndexOutOfBoundsException ignored) {
+
+					}
+				}
+			}
         });
-      //  mining2.start();
 
         Thread mining3 = new Thread(new Runnable() {
             @Override
-            public void run() {
-                ServerAnswer.blocksList.blist.add(genesis);
-                Block newBlock = null;
-                boolean weAreLast = false;
-                long timeofmine;
-                while(true){
-                    synchronized (this) {
-                        weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-                    }
-                    while (weAreLast) {
-                        try {
-                            Thread.sleep(250);
-                            synchronized (this) {
-                                weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    System.out.println("Thread3 - start mining attempt!!");
-                    long startime = System.currentTimeMillis() / 1000;
-                    while (newBlock == null && !weAreLast) {
-                        newBlock = HanukCoinUtils.mineCoinAtteempt3(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
-						synchronized (this){
+			public void run() {
+				Block newBlock = null;
+				boolean weAreLast = false;
+				long timeofmine;
+				while (true) {
+					try {
+						synchronized (this) {
 							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-						}                    }
-                    if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
-                        ServerAnswer.numofcoins++;
-                        System.out.println("Thread3 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-						synchronized (this){
-							System.out.println("Thread3 - block chain size: " + ServerAnswer.blocksList.blist.size());
 						}
-						timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
-                        System.out.println("Thread3 - time of mining: " + timeofmine + " seconds");
-						ServerAnswer.avgtime += timeofmine;
-                        System.out.println("Thread3 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins)  + " seconds");
-                        synchronized (this) {
-                            ServerAnswer.blocksList.blist.add(newBlock);
-							ServerAnswer.tryconnection = !ServerAnswer.tryconnection;
-                        }
-                    }
-                    else {
-                        System.out.println("Thread3 - another thread already mine a coin!");
-                    }
-                    newBlock = null;
-                }
-            }
+						while (weAreLast) {
+							try {
+								Thread.sleep(250);
+								synchronized (this) {
+									weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+								}
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						System.out.println("Thread3 - start mining attempt!!");
+						long startime = System.currentTimeMillis() / 1000;
+						while (newBlock == null && !weAreLast) {
+							synchronized (this) {
+								newBlock = HanukCoinUtils.mineCoinAtteempt3(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
+								weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+							}
+						}
+						synchronized (this) {
+							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
+								ServerAnswer.numofcoins++;
+								System.out.println("Thread3 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+								System.out.println("Thread3 - block chain size: " + ServerAnswer.blocksList.blist.size());
+								timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
+								System.out.println("Thread3 - time of mining: " + timeofmine + " seconds");
+								ServerAnswer.avgtime += timeofmine;
+								System.out.println("Thread3 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
+								ServerAnswer.blocksList.blist.add(newBlock);
+								ServerAnswer.tryconnection = true;
+							} else {
+								System.out.println("Thread3 - another thread already mine a coin!");
+							}
+						}
+						newBlock = null;
+					}
+
+					catch (ArrayIndexOutOfBoundsException ignored) {
+
+					}
+				}
+			}
         });
-       // mining3.start();
-        while (true){
-        	if (ServerAnswer.readytogo) {
+//        while (true){
+//        	if (ServerAnswer.readytogo) {
         		mining.start();
         		mining1.start();
         		mining2.start();
         		mining3.start();
-				break;
-        	}
-        }
+//				break;
+//        	}
+//        }
 
         try {
 			server.runServer();

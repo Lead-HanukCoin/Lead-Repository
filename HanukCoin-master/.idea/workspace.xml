@@ -41,7 +41,7 @@
       <recent name="C:\Users\osnat\Lead-Repository\HanukCoin-master" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.ServerAnswer1">
+  <component name="RunManager" selected="Application.ServerAnswer">
     <configuration name="ServerAnswer" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="il.ac.tau.cs.hanukcoin.ServerAnswer" />
       <module name="main" />
