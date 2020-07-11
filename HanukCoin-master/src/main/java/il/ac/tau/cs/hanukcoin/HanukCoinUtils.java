@@ -3,6 +3,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class HanukCoinUtils {
     static private final int PUZZLE_BITS0 = 20;  // Note - we can make it lower for quick testing
@@ -147,17 +148,107 @@ public class HanukCoinUtils {
      * @param attemptsCount - number of attemts
      * @return a new block OR null if failed
      */
-    public static Block mineCoinAtteempt(int myWalletNum, Block prevBlock, int attemptsCount) {
+    public static Block mineCoinAtteempt0(int myWalletNum, Block prevBlock, int attemptsCount) {
         int newSerialNum = prevBlock.getSerialNumber() + 1;
         byte[] prevSig = new byte[8];
         System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
         Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
         Random rand = new Random();
         for (int attempt= 0; attempt < attemptsCount; attempt++) {
-            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber()+1) {
+            if (ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
                 return null;
             }
-            long puzzle = rand.nextLong();
+            else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
+                return null;
+            }
+            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 4L);
+            newBlock.setLongPuzzle(puzzle);
+            Block.BlockError result = newBlock.checkSignature();
+            if (result != Block.BlockError.SIG_NO_ZEROS) {
+                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
+                byte[] sig = newBlock.calcSignature();
+                newBlock.setSignaturePart(sig);
+                // recheck block
+                result = newBlock.checkSignature();
+                if (result != Block.BlockError.OK) {
+                    return null; //failed
+                }
+                return newBlock;
+            }
+        }
+        return null;
+    }
+
+    public static Block mineCoinAtteempt1(int myWalletNum, Block prevBlock, int attemptsCount) {
+        int newSerialNum = prevBlock.getSerialNumber() + 1;
+        byte[] prevSig = new byte[8];
+        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
+        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
+        Random rand = new Random();
+        for (int attempt= 0; attempt < attemptsCount; attempt++) {
+            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
+                return null;
+            }
+            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 4L, (long)(Math.pow(2, 64)) / 2L);
+            //puzzle = (long)Math.min(puzzle, 2L * puzzle);
+            newBlock.setLongPuzzle(puzzle);
+            Block.BlockError result = newBlock.checkSignature();
+            if (result != Block.BlockError.SIG_NO_ZEROS) {
+                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
+                byte[] sig = newBlock.calcSignature();
+                newBlock.setSignaturePart(sig);
+                // recheck block
+                result = newBlock.checkSignature();
+                if (result != Block.BlockError.OK) {
+                    return null; //failed
+                }
+                return newBlock;
+            }
+        }
+        return null;
+    }
+
+    public static Block mineCoinAtteempt2(int myWalletNum, Block prevBlock, int attemptsCount) {
+        int newSerialNum = prevBlock.getSerialNumber() + 1;
+        byte[] prevSig = new byte[8];
+        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
+        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
+        Random rand = new Random();
+        for (int attempt= 0; attempt < attemptsCount; attempt++) {
+            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
+                return null;
+            }
+            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 2L, (long)(Math.pow(2, 64)) - (long)(Math.pow(2, 64)) / 4L);
+            //puzzle = (long)Math.min(puzzle, 2L * puzzle);
+            newBlock.setLongPuzzle(puzzle);
+            Block.BlockError result = newBlock.checkSignature();
+            if (result != Block.BlockError.SIG_NO_ZEROS) {
+                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
+                byte[] sig = newBlock.calcSignature();
+                newBlock.setSignaturePart(sig);
+                // recheck block
+                result = newBlock.checkSignature();
+                if (result != Block.BlockError.OK) {
+                    return null; //failed
+                }
+                return newBlock;
+            }
+        }
+        return null;
+    }
+
+    public static Block mineCoinAtteempt3(int myWalletNum, Block prevBlock, int attemptsCount) {
+        int newSerialNum = prevBlock.getSerialNumber() + 1;
+        byte[] prevSig = new byte[8];
+        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
+        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
+        Random rand = new Random();
+        for (int attempt= 0; attempt < attemptsCount; attempt++) {
+            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
+                return null;
+            }
+            long puzzle = ThreadLocalRandom.current().nextLong(3 * ((long)(Math.pow(2, 64))) / 4L, (long)(Math.pow(2, 64)));
+            //puzzle = (long)Math.min(puzzle, 2L * puzzle);
             newBlock.setLongPuzzle(puzzle);
             Block.BlockError result = newBlock.checkSignature();
             if (result != Block.BlockError.SIG_NO_ZEROS) {
@@ -189,7 +280,7 @@ public class HanukCoinUtils {
             Block newBlock = null;
             Block prevBlock = chain.get(i);
             while (newBlock == null) {
-                newBlock = mineCoinAtteempt(wallet1, prevBlock, 10000000);
+                newBlock = mineCoinAtteempt0(wallet1, prevBlock, 10000000);
             }
             int tmp = wallet1;
             wallet1 = wallet2;

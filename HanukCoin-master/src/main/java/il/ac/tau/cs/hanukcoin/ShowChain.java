@@ -56,8 +56,8 @@ public class ShowChain {
         public static String readLenStr(DataInputStream dis) throws IOException {
             byte strLen = dis.readByte();
             byte[] strBytes = new byte[strLen];
-            dis.read(strBytes, 0, strLen);
-            return new String(strBytes, "utf-8");        
+            dis.readFully(strBytes);
+            return new String(strBytes, "utf-8");
         }
 
         public static NodeInfo readFrom(DataInputStream dis) throws IOException {
@@ -65,7 +65,7 @@ public class ShowChain {
             n.name = readLenStr(dis);
             n.host = readLenStr(dis);
             n.port = dis.readUnsignedShort();
-            n.lastSeenTS =dis.readInt();
+            n.lastSeenTS = dis.readInt();
             // TODO(students): update extra fields
             return n;
         }
