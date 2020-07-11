@@ -572,7 +572,7 @@ public class ServerAnswer {
 						newBlock = null;
 					}
 
-					catch (ArrayIndexOutOfBoundsException ignored) {
+					catch (ArrayIndexOutOfBoundsException | NullPointerException ignored) {
 
 					}
 				}
@@ -626,7 +626,7 @@ public class ServerAnswer {
 						newBlock = null;
 					}
 
-					catch (ArrayIndexOutOfBoundsException ignored) {
+					catch (ArrayIndexOutOfBoundsException | NullPointerException ignored) {
 
 					}
 				}
@@ -680,7 +680,7 @@ public class ServerAnswer {
 						newBlock = null;
 					}
 
-					catch (ArrayIndexOutOfBoundsException ignored) {
+					catch (ArrayIndexOutOfBoundsException | NullPointerException ignored) {
 
 					}
 				}
@@ -734,7 +734,7 @@ public class ServerAnswer {
 						newBlock = null;
 					}
 
-					catch (ArrayIndexOutOfBoundsException ignored) {
+					catch (ArrayIndexOutOfBoundsException | NullPointerException ignored) {
 
 					}
 				}
