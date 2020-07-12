@@ -298,7 +298,19 @@ public class ServerAnswer {
 				receivedBlocks.add(newBlock);
 			}
 
-			if (blocksList.blist.size() < receivedBlocks.size()){
+			if (blocksList.blist.size() == receivedBlocks.size()) {
+				Block UsLastBlock = blocksList.blist.get(blocksList.blist.size() - 1);
+				Block ResLastBlock = receivedBlocks.get(receivedBlocks.size() - 1);
+				if ((HanukCoinUtils.getIntPuzzle(ResLastBlock.getBytes(), 16)) < (HanukCoinUtils.getIntPuzzle(UsLastBlock.getBytes(), 16))) {
+					if (receivedBlocks.get(0).equals(genesis)) {
+						BlocksList received = new BlocksList(receivedBlocks);
+						if (received.checkValid())
+							blocksList = received;
+					}
+				}
+			}
+
+			else if (blocksList.blist.size() < receivedBlocks.size()) {
 				if (receivedBlocks.get(0).equals(genesis)) {
 					BlocksList received = new BlocksList(receivedBlocks);
 					if (received.checkValid())
@@ -344,7 +356,7 @@ public class ServerAnswer {
 
 			if (changed) {
 				lastChange = (int) (System.currentTimeMillis() / 1000);
-				System.out.println("<----> got new node!");
+				System.out.println("<----> got new node or block!");
 				System.out.println("<----> try to connect to 3 nodes");
 				tryConnection(false);
 			}
@@ -572,8 +584,16 @@ public class ServerAnswer {
 								System.out.println("Thread0 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
 								ServerAnswer.blocksList.blist.add(newBlock);
 								ServerAnswer.tryconnection = true;
-							} else {
+							}
+							else {
 								System.out.println("Thread0 - another thread already mine a coin!");
+								synchronized (this) {
+									ServerAnswer.numofcoins++;
+									timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
+									System.out.println("ThreadMining - time of mining: " + timeofmine + " seconds");
+									ServerAnswer.avgtime += timeofmine;
+									System.out.println("ThreadMining - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
+								}
 							}
 						}
 						newBlock = null;

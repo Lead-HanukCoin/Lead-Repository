@@ -141,6 +141,19 @@ public class HanukCoinUtils {
         return true;
     }
 
+    public static int getIntPuzzle(byte[] data, int offset) {
+        //return data[offset] << 24 | data[offset + 1] << 16 | data[offset + 2] << 8 | data[offset + 3];
+        int b1 = (data[offset] & 0xFF) << 56;
+        int b2 = (data[offset + 1] & 0xFF) << 48;
+        int b3 = (data[offset + 2] & 0xFF) << 40;
+        int b4 = (data[offset + 3] & 0xFF) << 32;
+        int b5 = (data[offset + 4] & 0xFF) << 24;
+        int b6 = (data[offset + 5] & 0xFF) << 16;
+        int b7 = (data[offset + 6] & 0xFF) << 8;
+        int b8 = (data[offset + 7] & 0xFF);
+        return b1 | b2 | b3 | b4 | b5 | b6 | b7 | b8;
+    }
+
     /**
      * Do several attempts at zolving the puzzle
      * @param myWalletNum - wallet number to mine for
@@ -179,139 +192,12 @@ public class HanukCoinUtils {
         return null;
     }
 
-    public static Block mineCoinAtteempt0(int myWalletNum, Block prevBlock, int attemptsCount) {
-        int newSerialNum = prevBlock.getSerialNumber() + 1;
-        byte[] prevSig = new byte[8];
-        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
-        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
-        long i = 0;
-        for (int attempt= 0; attempt < attemptsCount; attempt++) {
-            if (ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
-                return null;
-            }
-            else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
-                return null;
-            }
-            long puzzle = 4 * i;
-            i++;
-            newBlock.setLongPuzzle(puzzle);
-            Block.BlockError result = newBlock.checkSignature();
-            if (result != Block.BlockError.SIG_NO_ZEROS) {
-                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
-                byte[] sig = newBlock.calcSignature();
-                newBlock.setSignaturePart(sig);
-                // recheck block
-                result = newBlock.checkSignature();
-                if (result != Block.BlockError.OK) {
-                    return null; //failed
-                }
-                return newBlock;
-            }
-        }
-        return null;
-    }
-
-    public static Block mineCoinAtteempt1(int myWalletNum, Block prevBlock, int attemptsCount) {
-        int newSerialNum = prevBlock.getSerialNumber() + 1;
-        byte[] prevSig = new byte[8];
-        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
-        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
-        long i = 0;
-        for (int attempt= 0; attempt < attemptsCount; attempt++) {
-            if (ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
-                return null;
-            }
-            else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
-                return null;
-            }
-            long puzzle = 1 + 4 * i;
-            i++;
-            newBlock.setLongPuzzle(puzzle);
-            Block.BlockError result = newBlock.checkSignature();
-            if (result != Block.BlockError.SIG_NO_ZEROS) {
-                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
-                byte[] sig = newBlock.calcSignature();
-                newBlock.setSignaturePart(sig);
-                // recheck block
-                result = newBlock.checkSignature();
-                if (result != Block.BlockError.OK) {
-                    return null; //failed
-                }
-                return newBlock;
-            }
-        }
-        return null;
-    }
-
-    public static Block mineCoinAtteempt2(int myWalletNum, Block prevBlock, int attemptsCount) {
-        int newSerialNum = prevBlock.getSerialNumber() + 1;
-        byte[] prevSig = new byte[8];
-        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
-        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
-        long i = 0;
-        for (int attempt= 0; attempt < attemptsCount; attempt++) {
-            if (ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
-                return null;
-            }
-            else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
-                return null;
-            }
-            long puzzle = 2 + 4 * i;
-            i++;
-            newBlock.setLongPuzzle(puzzle);
-            Block.BlockError result = newBlock.checkSignature();
-            if (result != Block.BlockError.SIG_NO_ZEROS) {
-                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
-                byte[] sig = newBlock.calcSignature();
-                newBlock.setSignaturePart(sig);
-                // recheck block
-                result = newBlock.checkSignature();
-                if (result != Block.BlockError.OK) {
-                    return null; //failed
-                }
-                return newBlock;
-            }
-        }
-        return null;
-    }
-
-    public static Block mineCoinAtteempt3(int myWalletNum, Block prevBlock, int attemptsCount) {
-        int newSerialNum = prevBlock.getSerialNumber() + 1;
-        byte[] prevSig = new byte[8];
-        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
-        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
-        long i = 0;
-        for (int attempt= 0; attempt < attemptsCount; attempt++) {
-            if (ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
-                return null;
-            }
-            else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
-                return null;
-            }
-            long puzzle = 3 + 4 * i;
-            i++;
-            newBlock.setLongPuzzle(puzzle);
-            Block.BlockError result = newBlock.checkSignature();
-            if (result != Block.BlockError.SIG_NO_ZEROS) {
-                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
-                byte[] sig = newBlock.calcSignature();
-                newBlock.setSignaturePart(sig);
-                // recheck block
-                result = newBlock.checkSignature();
-                if (result != Block.BlockError.OK) {
-                    return null; //failed
-                }
-                return newBlock;
-            }
-        }
-        return null;
-    }
 //    public static Block mineCoinAtteempt0(int myWalletNum, Block prevBlock, int attemptsCount) {
 //        int newSerialNum = prevBlock.getSerialNumber() + 1;
 //        byte[] prevSig = new byte[8];
 //        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
 //        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
-//        Random rand = new Random();
+//        long i = 0;
 //        for (int attempt= 0; attempt < attemptsCount; attempt++) {
 //            if (ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
 //                return null;
@@ -319,7 +205,8 @@ public class HanukCoinUtils {
 //            else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
 //                return null;
 //            }
-//            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 4L);
+//            long puzzle = 4 * i;
+//            i++;
 //            newBlock.setLongPuzzle(puzzle);
 //            Block.BlockError result = newBlock.checkSignature();
 //            if (result != Block.BlockError.SIG_NO_ZEROS) {
@@ -342,13 +229,16 @@ public class HanukCoinUtils {
 //        byte[] prevSig = new byte[8];
 //        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
 //        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
-//        Random rand = new Random();
+//        long i = 0;
 //        for (int attempt= 0; attempt < attemptsCount; attempt++) {
-//            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
+//            if (ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
 //                return null;
 //            }
-//            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 4L, (long)(Math.pow(2, 64)) / 2L);
-//            //puzzle = (long)Math.min(puzzle, 2L * puzzle);
+//            else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
+//                return null;
+//            }
+//            long puzzle = 1 + 4 * i;
+//            i++;
 //            newBlock.setLongPuzzle(puzzle);
 //            Block.BlockError result = newBlock.checkSignature();
 //            if (result != Block.BlockError.SIG_NO_ZEROS) {
@@ -371,13 +261,16 @@ public class HanukCoinUtils {
 //        byte[] prevSig = new byte[8];
 //        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
 //        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
-//        Random rand = new Random();
+//        long i = 0;
 //        for (int attempt= 0; attempt < attemptsCount; attempt++) {
-//            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
+//            if (ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
 //                return null;
 //            }
-//            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 2L, (long)(Math.pow(2, 64)) - (long)(Math.pow(2, 64)) / 4L);
-//            //puzzle = (long)Math.min(puzzle, 2L * puzzle);
+//            else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
+//                return null;
+//            }
+//            long puzzle = 2 + 4 * i;
+//            i++;
 //            newBlock.setLongPuzzle(puzzle);
 //            Block.BlockError result = newBlock.checkSignature();
 //            if (result != Block.BlockError.SIG_NO_ZEROS) {
@@ -400,13 +293,16 @@ public class HanukCoinUtils {
 //        byte[] prevSig = new byte[8];
 //        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
 //        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
-//        Random rand = new Random();
+//        long i = 0;
 //        for (int attempt= 0; attempt < attemptsCount; attempt++) {
-//            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
+//            if (ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
 //                return null;
 //            }
-//            long puzzle = ThreadLocalRandom.current().nextLong(3 * ((long)(Math.pow(2, 64))) / 4L, (long)(Math.pow(2, 64)));
-//            //puzzle = (long)Math.min(puzzle, 2L * puzzle);
+//            else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
+//                return null;
+//            }
+//            long puzzle = 3 + 4 * i;
+//            i++;
 //            newBlock.setLongPuzzle(puzzle);
 //            Block.BlockError result = newBlock.checkSignature();
 //            if (result != Block.BlockError.SIG_NO_ZEROS) {
@@ -423,6 +319,123 @@ public class HanukCoinUtils {
 //        }
 //        return null;
 //    }
+    public static Block mineCoinAtteempt0(int myWalletNum, Block prevBlock, int attemptsCount) {
+        int newSerialNum = prevBlock.getSerialNumber() + 1;
+        byte[] prevSig = new byte[8];
+        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
+        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
+        Random rand = new Random();
+        for (int attempt= 0; attempt < attemptsCount; attempt++) {
+            if (ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
+                return null;
+            }
+            else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
+                return null;
+            }
+            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 4L);
+            newBlock.setLongPuzzle(puzzle);
+            Block.BlockError result = newBlock.checkSignature();
+            if (result != Block.BlockError.SIG_NO_ZEROS) {
+                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
+                byte[] sig = newBlock.calcSignature();
+                newBlock.setSignaturePart(sig);
+                // recheck block
+                result = newBlock.checkSignature();
+                if (result != Block.BlockError.OK) {
+                    return null; //failed
+                }
+                return newBlock;
+            }
+        }
+        return null;
+    }
+
+    public static Block mineCoinAtteempt1(int myWalletNum, Block prevBlock, int attemptsCount) {
+        int newSerialNum = prevBlock.getSerialNumber() + 1;
+        byte[] prevSig = new byte[8];
+        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
+        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
+        Random rand = new Random();
+        for (int attempt= 0; attempt < attemptsCount; attempt++) {
+            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
+                return null;
+            }
+            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 4L, (long)(Math.pow(2, 64)) / 2L);
+            //puzzle = (long)Math.min(puzzle, 2L * puzzle);
+            newBlock.setLongPuzzle(puzzle);
+            Block.BlockError result = newBlock.checkSignature();
+            if (result != Block.BlockError.SIG_NO_ZEROS) {
+                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
+                byte[] sig = newBlock.calcSignature();
+                newBlock.setSignaturePart(sig);
+                // recheck block
+                result = newBlock.checkSignature();
+                if (result != Block.BlockError.OK) {
+                    return null; //failed
+                }
+                return newBlock;
+            }
+        }
+        return null;
+    }
+
+    public static Block mineCoinAtteempt2(int myWalletNum, Block prevBlock, int attemptsCount) {
+        int newSerialNum = prevBlock.getSerialNumber() + 1;
+        byte[] prevSig = new byte[8];
+        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
+        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
+        Random rand = new Random();
+        for (int attempt= 0; attempt < attemptsCount; attempt++) {
+            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
+                return null;
+            }
+            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 2L, (long)(Math.pow(2, 64)) - (long)(Math.pow(2, 64)) / 4L);
+            //puzzle = (long)Math.min(puzzle, 2L * puzzle);
+            newBlock.setLongPuzzle(puzzle);
+            Block.BlockError result = newBlock.checkSignature();
+            if (result != Block.BlockError.SIG_NO_ZEROS) {
+                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
+                byte[] sig = newBlock.calcSignature();
+                newBlock.setSignaturePart(sig);
+                // recheck block
+                result = newBlock.checkSignature();
+                if (result != Block.BlockError.OK) {
+                    return null; //failed
+                }
+                return newBlock;
+            }
+        }
+        return null;
+    }
+
+    public static Block mineCoinAtteempt3(int myWalletNum, Block prevBlock, int attemptsCount) {
+        int newSerialNum = prevBlock.getSerialNumber() + 1;
+        byte[] prevSig = new byte[8];
+        System.arraycopy(prevBlock.getBytes(), 24, prevSig, 0, 8);
+        Block newBlock = Block.createNoSig(newSerialNum, myWalletNum, prevSig);
+        Random rand = new Random();
+        for (int attempt= 0; attempt < attemptsCount; attempt++) {
+            if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
+                return null;
+            }
+            long puzzle = ThreadLocalRandom.current().nextLong(3 * ((long)(Math.pow(2, 64))) / 4L, (long)(Math.pow(2, 64)));
+            //puzzle = (long)Math.min(puzzle, 2L * puzzle);
+            newBlock.setLongPuzzle(puzzle);
+            Block.BlockError result = newBlock.checkSignature();
+            if (result != Block.BlockError.SIG_NO_ZEROS) {
+                // if enough zeros - we got error because of other reason - e.g. sig field not set yet
+                byte[] sig = newBlock.calcSignature();
+                newBlock.setSignaturePart(sig);
+                // recheck block
+                result = newBlock.checkSignature();
+                if (result != Block.BlockError.OK) {
+                    return null; //failed
+                }
+                return newBlock;
+            }
+        }
+        return null;
+    }
 
     public static void main(String[] args) {
         int numCoins = Integer.parseInt(args[0]);
