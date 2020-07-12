@@ -11,7 +11,7 @@ import static il.ac.tau.cs.hanukcoin.HanukCoinUtils.mineCoinAtteempt;
 
 
 public class HanukCoinUtilsTest extends TestCase{
-    @org.junit.Test
+  //  @org.junit.Test
     public void test_numBits() throws Exception {
         assertEquals(HanukCoinUtils.numBits(0), 0);
         assertEquals(HanukCoinUtils.numBits(32), 6);
@@ -19,7 +19,7 @@ public class HanukCoinUtilsTest extends TestCase{
         assertEquals(HanukCoinUtils.numBits(5), 3);
     }
 
-    @org.junit.Test
+ //   @org.junit.Test
     public void test_intFromIntoBytes() {
         byte[] data = new byte[9];
         int x = 0xDeadBeef;
@@ -59,7 +59,7 @@ public class HanukCoinUtilsTest extends TestCase{
         assert(delta2 > 2 * delta1);
     }
 
-    @org.junit.Test
+ //   @org.junit.Test
     public void test_mine() {
         Block genesis = HanukCoinUtils.createBlock0forTestStage();
         long t1 = System.nanoTime();
@@ -71,12 +71,12 @@ public class HanukCoinUtilsTest extends TestCase{
     }
 
 
-        @org.junit.Test
+       // @org.junit.Test
     public void test_numberOfZerosForPuzzle() {
         assertEquals(HanukCoinUtils.numberOfZerosForPuzzle(1000), 30);
     }
 
-    @org.junit.Test
+  //  @org.junit.Test
     public void test_walletCode() {
         assertEquals(HanukCoinUtils.walletCode("Foo Bar,Bar Vaz"), -1411231107);
     }

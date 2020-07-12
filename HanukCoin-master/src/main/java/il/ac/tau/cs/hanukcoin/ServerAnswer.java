@@ -110,14 +110,15 @@ public class ServerAnswer {
 			}
 		}
 		else {
-			System.out.println("<----> sending massage to all nodes in the connectionlist!!");
+			System.out.println("<----> sending massage to all nodes in connectionlist!");
+			ArrayList<ShowChain.NodeInfo> nodeArray;
 			synchronized (this) {
-				ArrayList<ShowChain.NodeInfo> nodeArray = ConnectionsList.activeNodes;
-				for (ShowChain.NodeInfo node : nodeArray) {
-					if (node != null) {
-						if (!(node.port == ServerAnswer.port && node.host.equals(ServerAnswer.host))) {
-							sendReceive(node.host, node.port);
-						}
+				nodeArray = new ArrayList<>(ConnectionsList.activeNodes);
+			}
+			for (ShowChain.NodeInfo node : nodeArray) {
+				if (node != null) {
+					if (!(node.port == ServerAnswer.port && node.host.equals(ServerAnswer.host))) {
+						sendReceive(node.host, node.port);
 					}
 				}
 			}
@@ -508,18 +509,24 @@ public class ServerAnswer {
 		Thread trytoconmine = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (true) {
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					synchronized (this){
-						if (ServerAnswer.tryconnection) {
-							ServerAnswer.tryconnection = false;
-							server.tryConnection(true);
+				try {
+					while (true) {
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						synchronized (this) {
+							if (ServerAnswer.tryconnection) {
+								ServerAnswer.tryconnection = false;
+								server.tryConnection(true);
+							}
 						}
 					}
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("<----> exception catched in trytoconmine thread");
 				}
 			}
 		});
