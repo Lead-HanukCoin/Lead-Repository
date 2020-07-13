@@ -82,7 +82,7 @@ public class ServerAnswer {
 		ArrayList<ShowChain.NodeInfo> nodes = new ArrayList<>();
 		for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 			ShowChain.NodeInfo node = it.next();
-			if ((!node.host.equals(ServerAnswer.host) || node.port != ServerAnswer.port) && (!ServerAnswer.waitingList.contains(node)) && (!node.host.equals("ivory.3utilities.com")) && (!node.host.equals("93.172.201.175"))) {
+			if ((!node.host.equals(ServerAnswer.host) || node.port != ServerAnswer.port) && (!ServerAnswer.waitingList.contains(node))) {
 				nodes.add(node);
 			}
 		}
@@ -223,7 +223,7 @@ public class ServerAnswer {
 			dos.writeInt(DEAD_DEAD);
 			synchronized (this) {
 				dos.writeInt(blocksList.blist.size());
-				for (Iterator<Block> it = blocksList.getBlocksIterator(); it.hasNext(); ) {
+				for (Iterator<Block> it = blocksList.getBlocksIterator(); it.hasNext(); ) {//PROOBLEM- java.util.ConcurrentModificationException
 					Block block = it.next();
 					block.writeInfo(dos);
 				}
@@ -298,14 +298,17 @@ public class ServerAnswer {
 				receivedBlocks.add(newBlock);
 			}
 
+			boolean changed = false;
 			if (blocksList.blist.size() == receivedBlocks.size()) {
 				Block UsLastBlock = blocksList.blist.get(blocksList.blist.size() - 1);
 				Block ResLastBlock = receivedBlocks.get(receivedBlocks.size() - 1);
 				if ((HanukCoinUtils.getIntPuzzle(ResLastBlock.getBytes(), 16)) < (HanukCoinUtils.getIntPuzzle(UsLastBlock.getBytes(), 16))) {
 					if (receivedBlocks.get(0).equals(genesis)) {
 						BlocksList received = new BlocksList(receivedBlocks);
-						if (received.checkValid())
+						if (received.checkValid()) {
 							blocksList = received;
+							changed = true;
+						}
 					}
 				}
 			}
@@ -313,13 +316,15 @@ public class ServerAnswer {
 			else if (blocksList.blist.size() < receivedBlocks.size()) {
 				if (receivedBlocks.get(0).equals(genesis)) {
 					BlocksList received = new BlocksList(receivedBlocks);
-					if (received.checkValid())
+					if (received.checkValid()) {
 						blocksList = received;
+						changed = true;
+					}
 				}
 			}
 
 			// update ConnectionsList.hmap
-			boolean changed = false;
+
 			synchronized (this) {
 				for (NodeInfo node : receivedNodes) {
 					if (!ConnectionsList.hmap.containsKey(new Pair(node.host, node.port))) {
@@ -471,7 +476,7 @@ public class ServerAnswer {
                     //server.sendReceive(addrTal, portTal);
                 }
                 server.sendReceive(addrTal, portTal);
-                //server.tryConnection();
+                server.tryConnection(false);
                 server.saveFile();
 				synchronized (this){
 					ServerAnswer.readytogo = true;
