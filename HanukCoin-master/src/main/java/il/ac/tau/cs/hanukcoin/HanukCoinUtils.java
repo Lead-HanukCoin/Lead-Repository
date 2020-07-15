@@ -330,9 +330,10 @@ public class HanukCoinUtils {
                 return null;
             }
             else if (ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode) {
+                System.out.println("Thread0 - mining attampt failed, someone have already mine a coin!!");
                 return null;
             }
-            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 4L);
+            long puzzle = 4 * ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 62)));
             newBlock.setLongPuzzle(puzzle);
             Block.BlockError result = newBlock.checkSignature();
             if (result != Block.BlockError.SIG_NO_ZEROS) {
@@ -360,7 +361,7 @@ public class HanukCoinUtils {
             if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
                 return null;
             }
-            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 4L, (long)(Math.pow(2, 64)) / 2L);
+            long puzzle = 1 + 4 * ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 62)) - 1);
             //puzzle = (long)Math.min(puzzle, 2L * puzzle);
             newBlock.setLongPuzzle(puzzle);
             Block.BlockError result = newBlock.checkSignature();
@@ -389,7 +390,7 @@ public class HanukCoinUtils {
             if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
                 return null;
             }
-            long puzzle = ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 64)) / 2L, (long)(Math.pow(2, 64)) - (long)(Math.pow(2, 64)) / 4L);
+            long puzzle = 2 + 4 * ThreadLocalRandom.current().nextLong((long)(Math.pow(2, 62)) - 1);
             //puzzle = (long)Math.min(puzzle, 2L * puzzle);
             newBlock.setLongPuzzle(puzzle);
             Block.BlockError result = newBlock.checkSignature();
@@ -418,7 +419,7 @@ public class HanukCoinUtils {
             if(ServerAnswer.blocksList.blist.size() > prevBlock.getSerialNumber() + 1) {
                 return null;
             }
-            long puzzle = ThreadLocalRandom.current().nextLong(3 * ((long)(Math.pow(2, 64))) / 4L, (long)(Math.pow(2, 64)));
+            long puzzle = 3 + 4 * ThreadLocalRandom.current().nextLong((long) (Math.pow(2, 62)) - 1);
             //puzzle = (long)Math.min(puzzle, 2L * puzzle);
             newBlock.setLongPuzzle(puzzle);
             Block.BlockError result = newBlock.checkSignature();

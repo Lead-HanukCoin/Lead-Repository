@@ -30,7 +30,7 @@ public class ServerAnswer {
 	public static long avgtime = 0;
 	public static int numofcoins = 0;
 	public static boolean tryconnection;
-    public static boolean readytogo;
+	public static boolean readytogo;
 
 	public static void log(String fmt, Object... args) {
 		println(fmt, args);
@@ -41,7 +41,7 @@ public class ServerAnswer {
 	}
 
 	private synchronized void readFile(DataInputStream dis){
-		
+
 		ClientConnection fileConnection = new ClientConnection(dis, null);
 		this.fileConnection = fileConnection;
 		try {
@@ -58,7 +58,7 @@ public class ServerAnswer {
 //		File file = new File(ServerAnswer.pathname);
 //		file.delete();
 
-			//System.out.println("--------------------------------------------------------------------------- " + );
+		//System.out.println("--------------------------------------------------------------------------- " + );
 		try {
 			File file = new File(ServerAnswer.pathname);
 			file.delete();
@@ -78,18 +78,24 @@ public class ServerAnswer {
 	}
 
 	private ShowChain.NodeInfo[] get3RandomNodes() {
-		NodeInfo[] arr = new NodeInfo[3];
+		NodeInfo[] arr = new NodeInfo[5];
 		ArrayList<ShowChain.NodeInfo> nodes = new ArrayList<>();
 		for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 			ShowChain.NodeInfo node = it.next();
-			if ((!node.host.equals(ServerAnswer.host) || node.port != ServerAnswer.port) && (!ServerAnswer.waitingList.contains(node))) {
+			if ((!node.host.equals(ServerAnswer.host)) && (!ServerAnswer.waitingList.contains(node))) {
 				nodes.add(node);
+			}
+			if (node.host.equals("213.57.218.162") && node.port == 14586) {
+				arr[0] = node;
+			}
+			if (node.host.equals("85.64.90.214") && node.port == 10084) {
+				arr[1] = node;
 			}
 		}
 		int cnt = 0;
 		while (cnt < 3 && nodes.size() != 0) {
 			int idx = (int) (Math.random() * nodes.size());
-			arr[cnt] = nodes.remove(idx);
+			arr[cnt + 2] = nodes.remove(idx);
 			cnt++;
 		}
 		return arr;
@@ -127,9 +133,9 @@ public class ServerAnswer {
 
 	public void sendReceive(String host, int port) {
 		try {
-//		    if (host.equals("ivory.3utilities.com")) {
-//		        return;
-//            }
+			if (host.equals("ivory.3utilities.com")) {
+				return;
+			}
 			log("INFO - Sending request message to %s:%d", host, port);
 			Socket soc = new Socket(host, port);
 			ClientConnection connection = new ClientConnection(soc, false);
@@ -152,6 +158,15 @@ public class ServerAnswer {
 			String addr = connectionSocket.getRemoteSocketAddress().toString();
 			host = addr.substring(1).split(":")[0];
 			port = Integer.parseInt(addr.substring(1).split(":")[1]);
+			if (host.equals("85.250.219.100") || host.equals("89.138.139.22") || host.equals("93.172.201.175") || host.equals("ivory.3utilities.com")) { //spammers
+				try {
+					connectionSocket.close();
+				}
+				catch (IOException ignored) {
+
+				}
+				return;
+			}
 			isIncomming = incomming;
 			this.connectionSocket = connectionSocket;
 			try {
@@ -223,8 +238,9 @@ public class ServerAnswer {
 			dos.writeInt(DEAD_DEAD);
 			synchronized (this) {
 				dos.writeInt(blocksList.blist.size());
-				for (Iterator<Block> it = blocksList.getBlocksIterator(); it.hasNext(); ) {//PROOBLEM- java.util.ConcurrentModificationException
-					Block block = it.next();
+				Iterator<Block> blockIterator =  blocksList.getBlocksIterator();
+				while (blockIterator.hasNext()) {//PROOBLEM- java.util.ConcurrentModificationException
+					Block block = blockIterator.next();
 					block.writeInfo(dos);
 				}
 			}
@@ -242,6 +258,7 @@ public class ServerAnswer {
 //			if (dataInput.available() == 0)
 //				return;
 			System.out.println("<----> got new message!!");
+			boolean isspammer = false;
 //			try {
 //				File myObj = new File(ServerAnswer.pathname);
 //				Scanner myReader = new Scanner(myObj);
@@ -269,7 +286,14 @@ public class ServerAnswer {
 //					return;
 //				}
 //			}
-			int cmd = dataInput.readInt(); // skip command field
+			int cmd;
+			try {
+				cmd = dataInput.readInt(); // skip command field
+			}
+			catch (NullPointerException e) {
+				System.out.println("<----> blocked massage from spammer!!");
+				return;
+			}
 			if (cmd != 1 && cmd != 2) {
 				throw new IOException("Bad message bad cmd");
 			}
@@ -283,7 +307,16 @@ public class ServerAnswer {
 			ArrayList<NodeInfo> receivedNodes = new ArrayList<>();
 			for (int ni = 0; ni < nodesCount; ni++) {
 				NodeInfo newInfo = NodeInfo.readFrom(dataInput);
+
+				if (newInfo.host.equals("89.138.139.22") || newInfo.host.equals("93.172.201.175") || newInfo.host.equals("ivory.3utilities.com")) { //spammers  filtering
+					isspammer = true;
+					continue;
+				}
+
 				receivedNodes.add(newInfo);
+			}
+			if (isspammer) {
+				return;
 			}
 
 			int deadDead = dataInput.readInt();
@@ -371,7 +404,9 @@ public class ServerAnswer {
 		private void connectionThread() throws IOException {
 			// This function runs in a separate thread to handle the connection
 			// send ConnectionsList
+//			if (!(host.equals("89.138.139.22") || host.equals("93.172.201.175") || host.equals("ivory.3utilities.com"))){
 			parseMessage(dataInput);
+//			}
 //			dataInput.close();
 //			dataOutput.close();
 //			connectionSocket.close();
@@ -441,7 +476,7 @@ public class ServerAnswer {
 		ServerAnswer.genesis = createBlock0forTestStage();
 		ServerAnswer.pathname = args[4];
 		ServerAnswer.tryconnection = false;
-        ServerAnswer.readytogo = false;
+		ServerAnswer.readytogo = false;
 
 
 		System.out.println("wallet: " + Integer.toHexString(ServerAnswer.walletCode));
@@ -473,11 +508,11 @@ public class ServerAnswer {
 					System.out.println("blockchain size: "  + ServerAnswer.blocksList.blist.size());
 				} catch (IOException e) {
 					e.printStackTrace();
-                    //server.sendReceive(addrTal, portTal);
-                }
-                server.sendReceive(addrTal, portTal);
-                server.tryConnection(false);
-                server.saveFile();
+					//server.sendReceive(addrTal, portTal);
+				}
+				server.sendReceive(addrTal, portTal);
+				server.tryConnection(false);
+				server.saveFile();
 				synchronized (this){
 					ServerAnswer.readytogo = true;
 				}
@@ -547,7 +582,7 @@ public class ServerAnswer {
 				}
 			}
 		});
-        trytoconmine.start();
+		trytoconmine.start();
 
 		Thread mining = new Thread(new Runnable() {
 			@Override
@@ -665,8 +700,8 @@ public class ServerAnswer {
 			}
 		});
 
-        Thread mining2 = new Thread(new Runnable() {
-            @Override
+		Thread mining2 = new Thread(new Runnable() {
+			@Override
 			public void run() {
 				Block newBlock = null;
 				boolean weAreLast = false;
@@ -717,10 +752,10 @@ public class ServerAnswer {
 					}
 				}
 			}
-        });
+		});
 
-        Thread mining3 = new Thread(new Runnable() {
-            @Override
+		Thread mining3 = new Thread(new Runnable() {
+			@Override
 			public void run() {
 				Block newBlock = null;
 				boolean weAreLast = false;
@@ -771,18 +806,18 @@ public class ServerAnswer {
 					}
 				}
 			}
-        });
+		});
 //        while (true){
 //        	if (ServerAnswer.readytogo) {
-        		mining.start();
-        		mining1.start();
-        		mining2.start();
-        		mining3.start();
+		mining.start();
+		mining1.start();
+		mining2.start();
+		mining3.start();
 //				break;
 //        	}
 //        }
 
-        try {
+		try {
 			server.runServer();
 		} catch (InterruptedException e) {
 			// Exit - Ctrl -C pressed
