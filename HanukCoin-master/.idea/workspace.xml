@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9883bd52-6ae7-487c-ae30-8d63ed83af07" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerAnswer.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerAnswer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/connectionList.txt" beforeDir="false" afterPath="$PROJECT_DIR$/connectionList.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$2.class" afterDir="false" />
@@ -14,7 +15,6 @@
       <change beforePath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer$ClientConnection.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/il/ac/tau/cs/hanukcoin/ServerAnswer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/HanukCoinUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/HanukCoinUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/il/ac/tau/cs/hanukcoin/ServerAnswer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -140,7 +140,7 @@
       <workItem from="1592896112774" duration="9380000" />
       <workItem from="1594159317896" duration="1200000" />
       <workItem from="1594192202418" duration="3815000" />
-      <workItem from="1594494383074" duration="54095000" />
+      <workItem from="1594494383074" duration="55655000" />
     </task>
     <servers />
   </component>
@@ -188,29 +188,29 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="288" key="GridCell.Tab.-1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594561708708" />
-    <state width="1877" height="346" key="GridCell.Tab.0.bottom" timestamp="1594803216058">
+    <state width="1877" height="346" key="GridCell.Tab.0.bottom" timestamp="1594806117569">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="186" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
-    <state width="1877" height="346" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1594803216058" />
+    <state width="1877" height="346" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1594806117569" />
     <state width="1877" height="252" key="GridCell.Tab.0.bottom/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1594113078255" />
-    <state width="1877" height="346" key="GridCell.Tab.0.center" timestamp="1594803216058">
+    <state width="1877" height="346" key="GridCell.Tab.0.center" timestamp="1594806117569">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="186" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
-    <state width="1877" height="346" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1594803216058" />
+    <state width="1877" height="346" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1594806117569" />
     <state width="1877" height="252" key="GridCell.Tab.0.center/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1594113078254" />
-    <state width="1877" height="346" key="GridCell.Tab.0.left" timestamp="1594803216058">
+    <state width="1877" height="346" key="GridCell.Tab.0.left" timestamp="1594806117569">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="186" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
-    <state width="1877" height="346" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1594803216058" />
+    <state width="1877" height="346" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1594806117569" />
     <state width="1877" height="252" key="GridCell.Tab.0.left/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1594113078254" />
-    <state width="1877" height="346" key="GridCell.Tab.0.right" timestamp="1594803216118">
+    <state width="1877" height="346" key="GridCell.Tab.0.right" timestamp="1594806117681">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="186" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1592581746437" />
-    <state width="1877" height="346" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594803216118" />
+    <state width="1877" height="346" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594806117681" />
     <state width="1877" height="252" key="GridCell.Tab.0.right/1920.125.1280.693/0.0.1920.1160@0.0.1920.1160" timestamp="1594113078254" />
     <state width="1877" height="288" key="GridCell.Tab.1.bottom" timestamp="1594561696895">
       <screen x="0" y="0" width="1920" height="1040" />

@@ -26,6 +26,7 @@ public class ServerAnswer {
 	public static BlocksList blocksList = new BlocksList(new ArrayList<>());
 	public static Block genesis;
 	public static int walletCode;
+	public static int elseWalletCode;
 	public static String pathname;
 	public static long avgtime = 0;
 	public static int numofcoins = 0;
@@ -40,7 +41,7 @@ public class ServerAnswer {
 		System.out.format(fmt + "\n", args);
 	}
 
-	private synchronized void readFile(DataInputStream dis){
+	private synchronized void readFile(DataInputStream dis) {
 
 		ClientConnection fileConnection = new ClientConnection(dis, null);
 		this.fileConnection = fileConnection;
@@ -52,13 +53,15 @@ public class ServerAnswer {
 			e.printStackTrace();
 		}
 	}
-	private synchronized void saveFile(){
-		//System.out.println("*");
+
+	private synchronized void saveFile() {
+		// System.out.println("*");
 //		System.out.println("--------------------------------------------------------------------------- ");
 //		File file = new File(ServerAnswer.pathname);
 //		file.delete();
 
-		//System.out.println("--------------------------------------------------------------------------- " + );
+		// System.out.println("---------------------------------------------------------------------------
+		// " + );
 		try {
 			File file = new File(ServerAnswer.pathname);
 			file.delete();
@@ -74,35 +77,60 @@ public class ServerAnswer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//			//System.out.println("***");
+//			//System.out.println("*");
 	}
 
-	private ShowChain.NodeInfo[] get3RandomNodes() {
-		NodeInfo[] arr = new NodeInfo[5];
+	private ShowChain.NodeInfo[] get3RandomNodes() { // actually more than 3
+//		NodeInfo[] arr = new NodeInfo[3];
+		NodeInfo[] arr = new NodeInfo[11];
+
 		ArrayList<ShowChain.NodeInfo> nodes = new ArrayList<>();
+
 		for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 			ShowChain.NodeInfo node = it.next();
-			if ((!node.host.equals(ServerAnswer.host)) && (!ServerAnswer.waitingList.contains(node))) {
+			if ((!node.host.equals(ServerAnswer.host) || node.port != ServerAnswer.port)
+					&& (!ServerAnswer.waitingList.contains(node)) && (!node.host.equals("ivory.3utilities.com"))
+					&& (!node.host.equals("93.172.201.175"))) {
 				nodes.add(node);
 			}
-			if (node.host.equals("213.57.218.162") && node.port == 14586) {
+
+			if (node.host.equals("35.246.17.73") && node.port == 8080) {
 				arr[0] = node;
 			}
-			if (node.host.equals("85.64.90.214") && node.port == 10084) {
+			if (node.host.equals("35.246.17.73") && node.port == 8081) {
 				arr[1] = node;
 			}
+			if (node.host.equals("35.246.17.73") && node.port == 8082) {
+				arr[2] = node;
+			}
+			if (node.host.equals("ksp.theworkpc.com") && node.port == 61198) {
+				arr[3] = node;
+			}
+			if (node.host.equals("igorcomputers.webredirect.org") && node.port == 38865) {
+				arr[4] = node;
+			}
+			if (node.host.equals("gamestop.kozow.com") && node.port == 38976) {
+				arr[5] = node;
+			}
+			if (node.host.equals("213.57.218.162") && node.port == 14586) {
+				arr[6] = node;
+			}
+			if (node.host.equals("85.64.90.214") && node.port == 10084) {
+				arr[7] = node;
+			}
+
 		}
 		int cnt = 0;
 		while (cnt < 3 && nodes.size() != 0) {
 			int idx = (int) (Math.random() * nodes.size());
-			arr[cnt + 2] = nodes.remove(idx);
+			arr[cnt + 8] = nodes.remove(idx);
 			cnt++;
 		}
 		return arr;
 	}
 
 	private void tryConnection(boolean b) {
-		if (!b){
+		if (!b) {
 			ShowChain.NodeInfo[] nodeArray = get3RandomNodes();
 			synchronized (this) {
 				for (ShowChain.NodeInfo node : nodeArray) {
@@ -114,17 +142,15 @@ public class ServerAnswer {
 					}
 				}
 			}
-		}
-		else {
-			System.out.println("<----> sending massage to all nodes in connectionlist!");
-			ArrayList<ShowChain.NodeInfo> nodeArray;
+		} else {
+			System.out.println("<----> sending massage to all nodes in the connectionlist!!");
 			synchronized (this) {
-				nodeArray = new ArrayList<>(ConnectionsList.activeNodes);
-			}
-			for (ShowChain.NodeInfo node : nodeArray) {
-				if (node != null) {
-					if (!(node.port == ServerAnswer.port && node.host.equals(ServerAnswer.host))) {
-						sendReceive(node.host, node.port);
+				ArrayList<ShowChain.NodeInfo> nodeArray = ConnectionsList.activeNodes;
+				for (ShowChain.NodeInfo node : nodeArray) {
+					if (node != null) {
+						if (!(node.port == ServerAnswer.port && node.host.equals(ServerAnswer.host))) {
+							sendReceive(node.host, node.port);
+						}
 					}
 				}
 			}
@@ -133,9 +159,9 @@ public class ServerAnswer {
 
 	public void sendReceive(String host, int port) {
 		try {
-			if (host.equals("ivory.3utilities.com")) {
-				return;
-			}
+//		    if (host.equals("ivory.3utilities.com")) {
+//		        return;
+//            }
 			log("INFO - Sending request message to %s:%d", host, port);
 			Socket soc = new Socket(host, port);
 			ClientConnection connection = new ClientConnection(soc, false);
@@ -157,16 +183,18 @@ public class ServerAnswer {
 		public ClientConnection(Socket connectionSocket, boolean incomming) {
 			String addr = connectionSocket.getRemoteSocketAddress().toString();
 			host = addr.substring(1).split(":")[0];
-			port = Integer.parseInt(addr.substring(1).split(":")[1]);
-			if (host.equals("85.250.219.100") || host.equals("89.138.139.22") || host.equals("93.172.201.175") || host.equals("ivory.3utilities.com")) { //spammers
-				try {
-					connectionSocket.close();
-				}
-				catch (IOException ignored) {
 
-				}
+			if (host.equals("85.250.219.100") || host.equals("89.138.139.22") || host.equals("93.172.201.175") || host.equals("ivory.3utilities.com")) { //spammers
+//				try {
+//					connectionSocket.close();
+//				}
+//				catch (IOException ignored) {
+//
+//				}
 				return;
 			}
+
+			port = Integer.parseInt(addr.substring(1).split(":")[1]);
 			isIncomming = incomming;
 			this.connectionSocket = connectionSocket;
 			try {
@@ -176,7 +204,8 @@ public class ServerAnswer {
 				// connectionThread would fail and kill thread
 			}
 		}
-		public ClientConnection(DataInputStream dis, DataOutputStream dos){ // for files only
+
+		public ClientConnection(DataInputStream dis, DataOutputStream dos) { // for files only
 			dataInput = dis;
 			dataOutput = dos;
 		}
@@ -210,8 +239,9 @@ public class ServerAnswer {
 		}
 
 		private void send(int cmd, DataOutputStream dos) throws IOException {
-			sendToFileOrNode(cmd,dos,false);
+			sendToFileOrNode(cmd, dos, false);
 		}
+
 		private void sendToFileOrNode(int cmd, DataOutputStream dos, boolean file) throws IOException {
 //			System.out.println("is file: " + file);
 //			System.out.println("connections list hmap: " + ConnectionsList.hmap);
@@ -231,22 +261,20 @@ public class ServerAnswer {
 						node.writeInfo(dos);
 					}
 				}
-			}
-			else {
+			} else {
 				dos.writeInt(0);
 			}
 			dos.writeInt(DEAD_DEAD);
 			synchronized (this) {
 				dos.writeInt(blocksList.blist.size());
-				Iterator<Block> blockIterator =  blocksList.getBlocksIterator();
-				while (blockIterator.hasNext()) {//PROOBLEM- java.util.ConcurrentModificationException
-					Block block = blockIterator.next();
+				for (Iterator<Block> it = blocksList.getBlocksIterator(); it.hasNext();) {
+					Block block = it.next();
 					block.writeInfo(dos);
 				}
 			}
-			if (file){
+			if (file) {
 				DataInputStream dis = new DataInputStream(new FileInputStream(new File(ServerAnswer.pathname)));
-				//System.out.println("line");
+				// System.out.println("line");
 				parseMessage(dis);
 
 			}
@@ -258,7 +286,6 @@ public class ServerAnswer {
 //			if (dataInput.available() == 0)
 //				return;
 			System.out.println("<----> got new message!!");
-			boolean isspammer = false;
 //			try {
 //				File myObj = new File(ServerAnswer.pathname);
 //				Scanner myReader = new Scanner(myObj);
@@ -271,8 +298,6 @@ public class ServerAnswer {
 //				System.out.println("An error occurred.");
 //				e.printStackTrace();
 //			}
-
-
 
 //			int cmd = 0;
 //			synchronized (this) {
@@ -307,16 +332,7 @@ public class ServerAnswer {
 			ArrayList<NodeInfo> receivedNodes = new ArrayList<>();
 			for (int ni = 0; ni < nodesCount; ni++) {
 				NodeInfo newInfo = NodeInfo.readFrom(dataInput);
-
-				if (newInfo.host.equals("89.138.139.22") || newInfo.host.equals("93.172.201.175") || newInfo.host.equals("ivory.3utilities.com")) { //spammers  filtering
-					isspammer = true;
-					continue;
-				}
-
 				receivedNodes.add(newInfo);
-			}
-			if (isspammer) {
-				return;
 			}
 
 			int deadDead = dataInput.readInt();
@@ -333,9 +349,8 @@ public class ServerAnswer {
 
 			boolean changed = false;
 			if (blocksList.blist.size() == receivedBlocks.size()) {
-				Block UsLastBlock = blocksList.blist.get(blocksList.blist.size() - 1);
-				Block ResLastBlock = receivedBlocks.get(receivedBlocks.size() - 1);
-				if ((HanukCoinUtils.getIntPuzzle(ResLastBlock.getBytes(), 16)) < (HanukCoinUtils.getIntPuzzle(UsLastBlock.getBytes(), 16))) {
+				if (HanukCoinUtils.getIntPuzzle(receivedBlocks.get(receivedBlocks.size() - 1).getBytes(), 16) < HanukCoinUtils
+						.getIntPuzzle(blocksList.blist.get(blocksList.blist.size() - 1).getBytes(), 16)) {
 					if (receivedBlocks.get(0).equals(genesis)) {
 						BlocksList received = new BlocksList(receivedBlocks);
 						if (received.checkValid()) {
@@ -346,7 +361,7 @@ public class ServerAnswer {
 				}
 			}
 
-			else if (blocksList.blist.size() < receivedBlocks.size()) {
+			if (blocksList.blist.size() < receivedBlocks.size()) {
 				if (receivedBlocks.get(0).equals(genesis)) {
 					BlocksList received = new BlocksList(receivedBlocks);
 					if (received.checkValid()) {
@@ -365,10 +380,10 @@ public class ServerAnswer {
 							changed = true;
 							ConnectionsList.add(node); // add a new node to hmap. isNew = true;
 						}
-					}
-					else {
+					} else {
 						NodeInfo originalNode = ConnectionsList.hmap.get(new Pair<>(node.host, node.port));
-						originalNode.lastSeenTS = Math.max(originalNode.lastSeenTS, node.lastSeenTS); // the time stamp							// one
+						originalNode.lastSeenTS = Math.max(originalNode.lastSeenTS, node.lastSeenTS); // the time stamp
+						// // one
 					}
 				}
 			}
@@ -394,7 +409,7 @@ public class ServerAnswer {
 
 			if (changed) {
 				lastChange = (int) (System.currentTimeMillis() / 1000);
-				System.out.println("<----> got new node or block!");
+				System.out.println("<----> got new node!");
 				System.out.println("<----> try to connect to 3 nodes");
 				tryConnection(false);
 			}
@@ -404,9 +419,7 @@ public class ServerAnswer {
 		private void connectionThread() throws IOException {
 			// This function runs in a separate thread to handle the connection
 			// send ConnectionsList
-//			if (!(host.equals("89.138.139.22") || host.equals("93.172.201.175") || host.equals("ivory.3utilities.com"))){
 			parseMessage(dataInput);
-//			}
 //			dataInput.close();
 //			dataOutput.close();
 //			connectionSocket.close();
@@ -463,8 +476,6 @@ public class ServerAnswer {
 	}
 
 
-
-
 	public static void main(String[] args) {
 		ServerAnswer.TeamName = args[1];
 		ServerAnswer.accepPort = Integer.parseInt(args[3]);
@@ -472,12 +483,12 @@ public class ServerAnswer {
 		ServerAnswer server = new ServerAnswer();
 		ServerAnswer.host = args[2];
 		ServerAnswer.walletCode = HanukCoinUtils.walletCode(args[1]);
-		//ServerAnswer.walletCode = HanukCoinUtils.walletCode("Lead");
+		ServerAnswer.elseWalletCode = HanukCoinUtils.walletCode("Lead2");
+		// ServerAnswer.walletCode = HanukCoinUtils.walletCode("Lead");
 		ServerAnswer.genesis = createBlock0forTestStage();
 		ServerAnswer.pathname = args[4];
 		ServerAnswer.tryconnection = false;
 		ServerAnswer.readytogo = false;
-
 
 		System.out.println("wallet: " + Integer.toHexString(ServerAnswer.walletCode));
 //        try {
@@ -498,38 +509,37 @@ public class ServerAnswer {
 
 //		ConnectionsList.add(new NodeInfo("Earth" , addrTal, portTal,0));
 
-		Thread firstMassage = new Thread( new Runnable() {
+		Thread firstMassage = new Thread(new Runnable() {
 			public void run() {
 				try {
 					File file = new File(ServerAnswer.pathname);
 					DataInputStream FileDataIn = new DataInputStream(new FileInputStream(file));
 					server.readFile(FileDataIn);
 					FileDataIn.close();
-					System.out.println("blockchain size: "  + ServerAnswer.blocksList.blist.size());
+					System.out.println("blockchain size: " + ServerAnswer.blocksList.blist.size());
 				} catch (IOException e) {
 					e.printStackTrace();
-					//server.sendReceive(addrTal, portTal);
+					// server.sendReceive(addrTal, portTal);
 				}
 				server.sendReceive(addrTal, portTal);
-				server.tryConnection(false);
+				// server.tryConnection();
 				server.saveFile();
-				synchronized (this){
+				synchronized (this) {
 					ServerAnswer.readytogo = true;
 				}
 			}
 		});
 		firstMassage.start();
 
-
-
 		Thread fiveMin = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (true) {
 					try {
-						//System.out.println("<----> start 5 minutes sleep");
-						Thread.sleep(5 * 60000 - 1000 * ((int) (System.currentTimeMillis() / 1000) - server.lastChange));
-						//System.out.println("<----> 5 minutes sleep ended");
+						// System.out.println("<----> start 5 minutes sleep");
+						Thread.sleep(
+								5 * 60000 - 1000 * ((int) (System.currentTimeMillis() / 1000) - server.lastChange));
+						// System.out.println("<----> 5 minutes sleep ended");
 						server.saveFile();
 						for (Iterator<ShowChain.NodeInfo> it = ConnectionsList.getValuesIterator(); it.hasNext();) {
 							ShowChain.NodeInfo node = it.next();
@@ -561,24 +571,18 @@ public class ServerAnswer {
 		Thread trytoconmine = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					while (true) {
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						synchronized (this) {
-							if (ServerAnswer.tryconnection) {
-								ServerAnswer.tryconnection = false;
-								server.tryConnection(true);
-							}
+				while (true) {
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					synchronized (this) {
+						if (ServerAnswer.tryconnection) {
+							ServerAnswer.tryconnection = false;
+							server.tryConnection(true);
 						}
 					}
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("<----> exception catched in trytoconmine thread");
 				}
 			}
 		});
@@ -593,53 +597,57 @@ public class ServerAnswer {
 				while (true) {
 					try {
 						synchronized (this) {
-							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1)
+									.getWalletNumber() == ServerAnswer.walletCode;
 						}
-						while (weAreLast) {
-							try {
-								Thread.sleep(250);
-								synchronized (this) {
-									weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-								}
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
+
 						System.out.println("Thread0 - start mining attempt!!");
 						long startime = System.currentTimeMillis() / 1000;
-						while (newBlock == null && !weAreLast) {
-							synchronized (this) {
-								newBlock = HanukCoinUtils.mineCoinAtteempt0(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
-								weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+						while (newBlock == null) {
+							if (!weAreLast) {
+								synchronized (this) {
+									newBlock = HanukCoinUtils.mineCoinAtteempt0(ServerAnswer.walletCode,
+											ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1),
+											1000000);
+									weAreLast = ServerAnswer.blocksList.blist
+											.get(ServerAnswer.blocksList.blist.size() - 1)
+											.getWalletNumber() == ServerAnswer.walletCode;
+								}
+							} else {
+								synchronized (this) {
+									newBlock = HanukCoinUtils.mineCoinAtteempt0(ServerAnswer.elseWalletCode,
+											ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1),
+											1000000);
+									weAreLast = ServerAnswer.blocksList.blist
+											.get(ServerAnswer.blocksList.blist.size() - 1)
+											.getWalletNumber() == ServerAnswer.walletCode;
+								}
 							}
+
 						}
 						synchronized (this) {
-							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
+							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1)
+									.getWalletNumber() == ServerAnswer.walletCode)) {
 								ServerAnswer.numofcoins++;
-								System.out.println("Thread0 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-								System.out.println("Thread0 - block chain size: " + ServerAnswer.blocksList.blist.size());
+								System.out.println(
+										"Thread0 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+								System.out
+										.println("Thread0 - block chain size: " + ServerAnswer.blocksList.blist.size());
 								timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
 								System.out.println("Thread0 - time of mining: " + timeofmine + " seconds");
 								ServerAnswer.avgtime += timeofmine;
-								System.out.println("Thread0 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
+								System.out.println("Thread0 - average time of mining: "
+										+ (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
 								ServerAnswer.blocksList.blist.add(newBlock);
 								ServerAnswer.tryconnection = true;
-							}
-							else {
+							} else {
 								System.out.println("Thread0 - another thread already mine a coin!");
-								synchronized (this) {
-									ServerAnswer.numofcoins++;
-									timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
-									System.out.println("ThreadMining - time of mining: " + timeofmine + " seconds");
-									ServerAnswer.avgtime += timeofmine;
-									System.out.println("ThreadMining - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
-								}
 							}
 						}
 						newBlock = null;
 					}
 
-					catch (ArrayIndexOutOfBoundsException | NullPointerException ignored) {
+					catch (ArrayIndexOutOfBoundsException ignored) {
 
 					}
 				}
@@ -655,35 +663,47 @@ public class ServerAnswer {
 				while (true) {
 					try {
 						synchronized (this) {
-							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1)
+									.getWalletNumber() == ServerAnswer.walletCode;
 						}
-						while (weAreLast) {
-							try {
-								Thread.sleep(250);
-								synchronized (this) {
-									weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-								}
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
+
 						System.out.println("Thread1 - start mining attempt!!");
 						long startime = System.currentTimeMillis() / 1000;
-						while (newBlock == null && !weAreLast) {
-							synchronized (this) {
-								newBlock = HanukCoinUtils.mineCoinAtteempt1(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
-								weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+						while (newBlock == null) {
+							if (!weAreLast) {
+								synchronized (this) {
+									newBlock = HanukCoinUtils.mineCoinAtteempt1(ServerAnswer.walletCode,
+											ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1),
+											1000000);
+									weAreLast = ServerAnswer.blocksList.blist
+											.get(ServerAnswer.blocksList.blist.size() - 1)
+											.getWalletNumber() == ServerAnswer.walletCode;
+								}
+							} else {
+								synchronized (this) {
+									newBlock = HanukCoinUtils.mineCoinAtteempt1(ServerAnswer.elseWalletCode,
+											ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1),
+											1000000);
+									weAreLast = ServerAnswer.blocksList.blist
+											.get(ServerAnswer.blocksList.blist.size() - 1)
+											.getWalletNumber() == ServerAnswer.walletCode;
+								}
 							}
+
 						}
 						synchronized (this) {
-							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
+							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1)
+									.getWalletNumber() == ServerAnswer.walletCode)) {
 								ServerAnswer.numofcoins++;
-								System.out.println("Thread1 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-								System.out.println("Thread1 - block chain size: " + ServerAnswer.blocksList.blist.size());
+								System.out.println(
+										"Thread1 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+								System.out
+										.println("Thread1 - block chain size: " + ServerAnswer.blocksList.blist.size());
 								timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
 								System.out.println("Thread1 - time of mining: " + timeofmine + " seconds");
 								ServerAnswer.avgtime += timeofmine;
-								System.out.println("Thread1 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
+								System.out.println("Thread1 - average time of mining: "
+										+ (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
 								ServerAnswer.blocksList.blist.add(newBlock);
 								ServerAnswer.tryconnection = true;
 							} else {
@@ -693,7 +713,7 @@ public class ServerAnswer {
 						newBlock = null;
 					}
 
-					catch (ArrayIndexOutOfBoundsException | NullPointerException ignored) {
+					catch (ArrayIndexOutOfBoundsException ignored) {
 
 					}
 				}
@@ -709,35 +729,46 @@ public class ServerAnswer {
 				while (true) {
 					try {
 						synchronized (this) {
-							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-						}
-						while (weAreLast) {
-							try {
-								Thread.sleep(250);
-								synchronized (this) {
-									weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-								}
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
+							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1)
+									.getWalletNumber() == ServerAnswer.walletCode;
 						}
 						System.out.println("Thread2 - start mining attempt!!");
 						long startime = System.currentTimeMillis() / 1000;
-						while (newBlock == null && !weAreLast) {
-							synchronized (this) {
-								newBlock = HanukCoinUtils.mineCoinAtteempt2(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
-								weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+						while (newBlock == null) {
+							if (!weAreLast) {
+								synchronized (this) {
+									newBlock = HanukCoinUtils.mineCoinAtteempt2(ServerAnswer.walletCode,
+											ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1),
+											1000000);
+									weAreLast = ServerAnswer.blocksList.blist
+											.get(ServerAnswer.blocksList.blist.size() - 1)
+											.getWalletNumber() == ServerAnswer.walletCode;
+								}
+							} else {
+								synchronized (this) {
+									newBlock = HanukCoinUtils.mineCoinAtteempt2(ServerAnswer.elseWalletCode,
+											ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1),
+											1000000);
+									weAreLast = ServerAnswer.blocksList.blist
+											.get(ServerAnswer.blocksList.blist.size() - 1)
+											.getWalletNumber() == ServerAnswer.walletCode;
+								}
 							}
+
 						}
 						synchronized (this) {
-							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
+							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1)
+									.getWalletNumber() == ServerAnswer.walletCode)) {
 								ServerAnswer.numofcoins++;
-								System.out.println("Thread2 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-								System.out.println("Thread2 - block chain size: " + ServerAnswer.blocksList.blist.size());
+								System.out.println(
+										"Thread2 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+								System.out
+										.println("Thread2 - block chain size: " + ServerAnswer.blocksList.blist.size());
 								timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
 								System.out.println("Thread2 - time of mining: " + timeofmine + " seconds");
 								ServerAnswer.avgtime += timeofmine;
-								System.out.println("Thread2 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
+								System.out.println("Thread2 - average time of mining: "
+										+ (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
 								ServerAnswer.blocksList.blist.add(newBlock);
 								ServerAnswer.tryconnection = true;
 							} else {
@@ -747,7 +778,7 @@ public class ServerAnswer {
 						newBlock = null;
 					}
 
-					catch (ArrayIndexOutOfBoundsException | NullPointerException ignored) {
+					catch (ArrayIndexOutOfBoundsException ignored) {
 
 					}
 				}
@@ -763,35 +794,47 @@ public class ServerAnswer {
 				while (true) {
 					try {
 						synchronized (this) {
-							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+							weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1)
+									.getWalletNumber() == ServerAnswer.walletCode;
 						}
-						while (weAreLast) {
-							try {
-								Thread.sleep(250);
-								synchronized (this) {
-									weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
-								}
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
+
 						System.out.println("Thread3 - start mining attempt!!");
 						long startime = System.currentTimeMillis() / 1000;
-						while (newBlock == null && !weAreLast) {
-							synchronized (this) {
-								newBlock = HanukCoinUtils.mineCoinAtteempt3(ServerAnswer.walletCode, ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1), 1000000);
-								weAreLast = ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode;
+						while (newBlock == null) {
+							if (!weAreLast) {
+								synchronized (this) {
+									newBlock = HanukCoinUtils.mineCoinAtteempt3(ServerAnswer.walletCode,
+											ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1),
+											1000000);
+									weAreLast = ServerAnswer.blocksList.blist
+											.get(ServerAnswer.blocksList.blist.size() - 1)
+											.getWalletNumber() == ServerAnswer.walletCode;
+								}
+							} else {
+								synchronized (this) {
+									newBlock = HanukCoinUtils.mineCoinAtteempt3(ServerAnswer.elseWalletCode,
+											ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1),
+											1000000);
+									weAreLast = ServerAnswer.blocksList.blist
+											.get(ServerAnswer.blocksList.blist.size() - 1)
+											.getWalletNumber() == ServerAnswer.walletCode;
+								}
 							}
+
 						}
 						synchronized (this) {
-							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1).getWalletNumber() == ServerAnswer.walletCode)) {
+							if (!(ServerAnswer.blocksList.blist.get(ServerAnswer.blocksList.blist.size() - 1)
+									.getWalletNumber() == ServerAnswer.walletCode)) {
 								ServerAnswer.numofcoins++;
-								System.out.println("Thread3 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-								System.out.println("Thread3 - block chain size: " + ServerAnswer.blocksList.blist.size());
+								System.out.println(
+										"Thread3 - $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+								System.out
+										.println("Thread3 - block chain size: " + ServerAnswer.blocksList.blist.size());
 								timeofmine = Math.round((System.currentTimeMillis() / 1000.) - startime);
 								System.out.println("Thread3 - time of mining: " + timeofmine + " seconds");
 								ServerAnswer.avgtime += timeofmine;
-								System.out.println("Thread3 - average time of mining: " + (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
+								System.out.println("Thread3 - average time of mining: "
+										+ (ServerAnswer.avgtime / ServerAnswer.numofcoins) + " seconds");
 								ServerAnswer.blocksList.blist.add(newBlock);
 								ServerAnswer.tryconnection = true;
 							} else {
@@ -801,7 +844,7 @@ public class ServerAnswer {
 						newBlock = null;
 					}
 
-					catch (ArrayIndexOutOfBoundsException | NullPointerException ignored) {
+					catch (ArrayIndexOutOfBoundsException ignored) {
 
 					}
 				}
